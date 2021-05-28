@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.decomposition import PCA
 from gensim.models import Word2Vec, KeyedVectors
 
-TRAIN = pathlib.Path('../data/keyterm_annotated_wv_train.txt')
+TRAIN = pathlib.Path('keyterm_annotated_wv_train.txt')
 OUTPUT = pathlib.Path('wv.model.bin')
 OUTPUT_PCA = 'keyterms.pca.csv'
 

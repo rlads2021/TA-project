@@ -1,0 +1,150 @@
+---
+title: "PTT/Weibo Data Selection Process"
+output: 
+   html_document:
+      toc: true
+      toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	comment = "#>"
+)
+```
+
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+theme_set(theme_bw())
+
+ptt = readr::read_csv("ptt_full.csv")
+wei = readr::read_csv("weibo_full.csv")
+
+summary(ptt$date)
+summary(wei$date)
+```
+
+## Post freq distribution
+
+```{r}
+ggplot() +
+   geom_freqpoly(aes(ptt$date), binwidth = 30, color = "blue") +
+   geom_freqpoly(aes(wei$date), binwidth = 30, color = "red") +
+   scale_x_date(date_breaks = "2 months") +
+   labs(x = "date", y = "count") +
+   theme(axis.text.x = element_text(angle = 90))
+```
+
+
+## Explore time step size
+
+```{r}
+START_DATE = "2020-05-01" 
+END_DATE = "2020-10-01"
+TS_NUM = 9  # Number of time steps
+
+# Set time step splits
+date_filter <- c(as.Date(START_DATE), as.Date(END_DATE))
+start <- seq(date_filter[1], date_filter[2], length.out = TS_NUM + 1)
+end <- (start - 1)
+rng <- vector("list", length(start) - 1)
+for (i in seq_along(start)) {
+   if (i == length(start)) break
+   rng[[i]] = c(start[i], end[i + 1])
+}
+
+get_ts <- function(dates) {
+   sapply(dates, function(x) get_ts_atom(x))
+}
+get_ts_atom <- function(date) {
+   for (ts in seq_along(rng)) {
+      if (between(date, rng[[ts]][1], rng[[ts]][2]))
+         return(ts)         
+   }
+   warning(date, " not in defined timesteps!")
+   return(NULL)
+}
+count_tokens <- function(x) sapply(strsplit(x, '\u3000'), function(x) length(x))
+```
+
+```{r cache=T}
+ptt_ts <- ptt %>% 
+   filter(between(date, date_filter[1], date_filter[2] - 1)) %>%
+   mutate(ts = get_ts(date),
+          tk_count = count_tokens(text)) %>%
+   group_by(ts) %>%
+   summarise(tk = sum(tk_count),
+             post = n()) %>%
+   gather("type", "count", tk, post)
+ptt_ts
+
+wei_ts <- wei %>% 
+   filter(between(date, date_filter[1], date_filter[2] - 1)) %>%
+   mutate(ts = get_ts(date),
+          tk_count = count_tokens(text)) %>%
+   group_by(ts) %>%
+   summarise(tk = sum(tk_count), post = n()) %>%
+   gather("type", "count", tk, post)
+wei_ts
+```
+
+```{r fig.dim=c(8, 6)}
+d <- bind_rows(
+   ptt_ts %>% mutate(src = "ptt"),
+   wei_ts %>% mutate(src = "weibo")
+)
+
+ggplot(d) + 
+   geom_line(aes(ts, count, color = src)) +
+   facet_wrap(vars(type), nrow = 2, scales = "free_y") +
+   scale_x_continuous(breaks = 1:TS_NUM)
+```
+
+
+## Data Selection: sample posts
+
+Sample 3500 PTT posts from each time step, keep all Weibo's posts
+
+```{r cache=T}
+# Sample PTT posts
+set.seed(100)
+ptt <- ptt %>% 
+   filter(between(date, date_filter[1], date_filter[2] - 1)) %>%
+   mutate(ts = get_ts(date)) %>%
+   group_by(ts) %>%
+   sample_n(size = 3500) %>%
+   ungroup()
+
+# Filter weibo posts
+wei <- wei %>% 
+   filter(between(date, date_filter[1], date_filter[2] - 1)) %>%
+   mutate(ts = get_ts(date))
+
+# Check tk count
+ptt_ts <- ptt %>%
+   mutate(text = count_tokens(text)) %>%
+   group_by(ts) %>%
+   summarise(tk = sum(text),
+             post = n()) %>%
+   gather("type", "count", tk, post)
+wei_ts <- wei %>%
+   mutate(text = count_tokens(text)) %>%
+   group_by(ts) %>%
+   summarise(tk = sum(text),
+             post = n()) %>%
+   gather("type", "count", tk, post)
+bind_rows(
+   ptt_ts %>% mutate(src = "ptt"),
+   wei_ts %>% mutate(src = "weibo")
+) %>%
+ggplot() + 
+   geom_line(aes(ts, count, color = src)) +
+   facet_wrap(vars(type), nrow = 2, scales = "free_y") +
+   scale_x_continuous(breaks = 1:TS_NUM)
+```
+

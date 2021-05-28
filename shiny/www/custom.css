@@ -1,0 +1,10 @@
+span.src-link {
+   position:fixed; 
+   bottom:10px; 
+   right:15px
+}
+
+span.src-link > a:hover {
+   text-decoration: none;
+   color: #18bc9c !important;
+}

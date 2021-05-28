@@ -159,7 +159,7 @@ def time_slice_collapse():
 
 
 def run_sample_posts():
-    """Run R script to split time steps & balence corpus data
+    """Run R script to split time steps & balance corpus data
     """
     cwd = os.getcwd()
     os.chdir("raw/")

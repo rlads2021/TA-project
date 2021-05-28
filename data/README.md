@@ -65,7 +65,7 @@ The real data are compressed in zip files with the same filenames as below. Thes
     - `raw/ptt_full.csv`
     - `raw/weibo_full.csv`
 3. Explore corpus size across time (using `raw/ptt_full.csv` & `raw/weibo_full.csv`)
-    - Goals: determine time step size, sample posts if corpus sizes are not balenced across PTT/Weibo
+    - Goals: determine time step size, sample posts if corpus sizes are not balanced across PTT/Weibo
     - Documentation: <https://rlads2021.github.io/TA-project/post_freq>
     - Results:
         - `raw/ptt_sampled.csv`

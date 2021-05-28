@@ -8,3 +8,23 @@ span.src-link > a:hover {
    text-decoration: none;
    color: #18bc9c !important;
 }
+
+ul.timesteps  {
+   list-style-type: none;
+   margin-left: 0.5em; 
+   padding-left: 0;
+}
+ul.timesteps li {
+   font-weight: 0.75em;
+   color: #46627e;
+}
+span.timestep-num {
+   margin-right: 0.35em;
+   font-weight: bold;
+}
+span.timestep-num::before {
+   display: inline;
+   content: "T";
+   font-weight: bold;
+   color: #2c3e50;
+}

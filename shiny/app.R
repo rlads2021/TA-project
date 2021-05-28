@@ -14,13 +14,15 @@ source("word2vec.R")
 ggplot2::theme_set(theme_bw())
 
 keyterms <- readLines("data/keyterms.txt")
-timesteps <- c(
-    "2020-05" = 0,
-    "2020-06" = 1,
-    "2020-07" = 2,
-    "2020-08" = 3,
-    "2020-09" = 4
-)
+timesteps_li <- gsub("_", " ~ ", readLines("data/timesteps.txt"))
+timesteps_li <- paste0(seq_along(timesteps_li), "_", timesteps_li)
+timesteps_li <- lapply(timesteps_li, function(x) {
+    x <- strsplit(x, "_")[[1]]
+    ts <- x[1]
+    rng <- x[2]
+    tags$li(tags$span(ts, class = "timestep-num"), rng)
+})
+timesteps <- seq_along(timesteps_li)
 
 
 # Define UI for application that draws a histogram
@@ -56,7 +58,10 @@ ui <- bootstrapPage(
                              choices = c("微博" = "weibo", "PTT" = "ptt"),
                              selected = c("weibo", "ptt"),
                              inline = TRUE,
-                             width = NULL)),
+                             width = NULL),
+                         HTML("<label>區間：</label>"),
+                         uiOutput("selectedTimeStepStr")
+                         ),
                      # Plot
                      mainPanel(plotOutput("word2vecPlot", width = "90%", height = "520px")))
                  ),
@@ -78,6 +83,10 @@ server <- function(input, output) {
             timesteps = input$timesteps,
             source = input$source
         )
+    })
+    
+    output$selectedTimeStepStr <- renderUI({
+        tags$ul(timesteps_li[as.integer(input$timesteps)], class = "timesteps")
     })
 }
 

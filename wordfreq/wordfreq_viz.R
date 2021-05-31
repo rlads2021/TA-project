@@ -12,14 +12,10 @@ freq_viz <- function(words){
   p <- ggplot(data=matched) +
     geom_bar(mapping = aes(x = timestamp, y = freq, fill = src),
              stat = 'identity', position = "dodge") +
-    scale_x_continuous(breaks = seq(from = min(matched$timestamp), to = max(matched$timestamp), by = 1)) +
-    facet_wrap(vars(word))
+    scale_x_continuous(breaks = seq(from = min(matched$timestamp), to = max(matched$timestamp), by = 1))
   
-  if (length(words) == 1){
-    p <- ggplot(data=matched) +
-      geom_bar(mapping = aes(x = timestamp, y = freq, fill = src),
-               stat = 'identity', position = "dodge") +
-      scale_x_continuous(breaks = seq(from = min(matched$timestamp), to = max(matched$timestamp), by = 1))
+  if (length(words) > 1){
+    p <- p + facet_wrap(vars(word))
     }
   
   return(p)

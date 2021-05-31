@@ -10,7 +10,7 @@ count_freq <- function(article){
   words <- unlist(strsplit(content, '\u3000'))
   
   # word freq
-  words_freq<-table(unlist(words))
+  words_freq <- table(unlist(words))
   num_of_tokens <- length(unique(words))
   
   # build word freq df

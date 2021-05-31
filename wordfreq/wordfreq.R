@@ -1,4 +1,5 @@
 library(readr)
+library(stringr)
 
 setwd('../data/time_sliced_collapsed')
 all_files <- list.files()
@@ -11,7 +12,7 @@ count_freq <- function(article){
   
   # word freq
   words_freq <- table(unlist(words))
-  num_of_tokens <- length(unique(words))
+  num_of_tokens <- length(words)
   
   # build word freq df
   words_freq_df <- as.data.frame(cbind(names(words_freq),

@@ -7,7 +7,7 @@ setwd("../data/time_sliced_collapsed")
 
 freq_viz <- function(words){
   
-  all_files <- list.files('.', '.*.txt')
+  all_files <- list.files()
   
   count_freq <- function(article){
     # read file

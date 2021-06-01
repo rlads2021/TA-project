@@ -1,7 +1,8 @@
 library(readr)
 library(stringr)
+library(dplyr)
 
-setwd('../data/time_sliced_collapsed')
+setwd('time_sliced_collapsed')
 all_files <- list.files()
 
 count_freq <- function(article){
@@ -26,5 +27,5 @@ count_freq <- function(article){
 all_files_freq <- bind_rows(lapply(all_files, function(x)(count_freq(x))))
 
 # export csv file
-setwd('../../wordfreq')
-write.csv(all_files_freq, 'all_files_freq.csv', row.names=FALSE)
+setwd('..')
+write.csv(all_files_freq, 'all_files_freq.csv', row.names = F, fileEncoding = 'UTF-8')

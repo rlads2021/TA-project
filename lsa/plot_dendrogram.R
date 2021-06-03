@@ -89,6 +89,6 @@ plot_dendrogram <- function(weibo_t1_n = 0,
     sub = "")
 }
 
-plot_dendrogram(10, 10, 10)
+plot_dendrogram(weibo_t1_n = 10, ptt_t1_n = 10)
 
 

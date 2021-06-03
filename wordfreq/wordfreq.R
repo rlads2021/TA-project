@@ -20,7 +20,7 @@ count_freq <- function(article){
                                        as.integer(words_freq)/num_of_tokens))
   colnames(words_freq_df) <- c('word', 'freq')
   words_freq_df$src <- strsplit(article_name, '_')[[1]][1]
-  words_freq_df$timestamp <- strsplit(article_name, '_')[[1]][2]
+  words_freq_df$timestep <- strsplit(article_name, '_')[[1]][2]
   return(words_freq_df)
 }
 

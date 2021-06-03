@@ -10,9 +10,9 @@ freq_viz <- function(words){
   
   # visualization
   p <- ggplot(data=matched) +
-    geom_bar(mapping = aes(x = timestamp, y = freq, fill = src),
+    geom_bar(mapping = aes(x = timestep, y = freq, fill = src),
              stat = 'identity', position = "dodge") +
-    scale_x_continuous(breaks = seq(from = min(matched$timestamp), to = max(matched$timestamp), by = 1))
+    scale_x_continuous(breaks = seq(from = min(matched$timestep), to = max(matched$timestep), by = 1))
   
   if (length(words) > 1){
     p <- p + facet_wrap(vars(word))

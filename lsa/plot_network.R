@@ -77,9 +77,6 @@ plot_network <- function(weibo_t1_n = 0,
   doc_sim <-
     textstat_simil(as.dfm(sample_lsa), method = "cosine") %>% as.matrix()
   
-  ## create hclust
-  clust <- (1 - doc_sim) %>% as.dist %>% hclust
-  
   ## plotting
   textplot_network(as.dfm(doc_sim),
                    vertex_labelsize = 2)

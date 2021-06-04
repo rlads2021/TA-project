@@ -11,9 +11,14 @@ library(shiny)
 library(shinythemes)
 source("system_setup.R")
 source("word2vec.R")
+source("plot_dendrogram.R")
+source("plot_network.R")
 ggplot2::theme_set(theme_bw())
 
+
+# Get keyterms
 keyterms <- readLines("data/keyterms.txt")
+# Get time step info
 timesteps_li <- gsub("_", " ~ ", readLines("data/timesteps.txt"))
 timesteps_li <- paste0(seq_along(timesteps_li), "_", timesteps_li)
 timesteps_li <- lapply(timesteps_li, function(x) {
@@ -31,7 +36,42 @@ ui <- bootstrapPage(
     navbarPage(
         "TA Project Demo", theme = shinytheme("flatly"), collapsible = TRUE, selected = "詞向量",
         tabPanel(title = "詞頻", icon = icon("bar-chart")),
-        tabPanel(title = "LSA", icon = icon("line-chart")),
+        tabPanel(title = "LSA", icon = icon("line-chart"),
+                 # Input
+                 sidebarLayout(
+                     sidebarPanel(
+                         selectInput(
+                             inputId = "timesteps2",
+                             label = "時間點：",
+                             choices = timesteps,
+                             selected = timesteps[1:2],
+                             multiple = TRUE,
+                             width = NULL,
+                             size = NULL),
+                         # Set sample post number
+                         sliderInput(
+                            inputId = "samplePostNum",
+                            label = "文章數",
+                            min = 1, max = 500, step = 1,
+                            value = 10
+                         ),
+                         checkboxGroupInput(
+                             inputId = "source2",
+                             label = "來源：",
+                             choices = c("微博" = "weibo", "PTT" = "ptt"),
+                             selected = c("weibo", "ptt"),
+                             inline = TRUE,
+                             width = NULL),
+                         HTML("<label>區間：</label>"),
+                         uiOutput("selectedTimeStepStr2")
+                         ),
+                     # Plot
+                     mainPanel(
+                         plotOutput("lsaDendroPlot", width = "90%", height = "520px"),
+                         plotOutput("lsaNetworkPlot", width = "90%", height = "520px")
+                         )
+                     )
+                 ),
         tabPanel(title = "詞向量", icon = icon("location-arrow"),
                  # Input
                  sidebarLayout(
@@ -81,12 +121,32 @@ server <- function(input, output) {
         embed_viz(
             words = input$keyterms,
             timesteps = input$timesteps,
-            source = input$source
+            source = input$source2
+        )
+    })
+    
+    output$lsaNetworkPlot <- renderPlot({
+        plot_network_shiny(
+            timesteps = input$timesteps2,
+            n = input$samplePostNum,
+            src = input$source
+        )
+    })
+    
+    output$lsaDendroPlot <- renderPlot({
+        plot_dendrogram_shiny(
+            timesteps = input$timesteps2,
+            n = input$samplePostNum,
+            src = input$source2
         )
     })
     
     output$selectedTimeStepStr <- renderUI({
         tags$ul(timesteps_li[as.integer(input$timesteps)], class = "timesteps")
+    })
+    
+    output$selectedTimeStepStr2 <- renderUI({
+        tags$ul(timesteps_li[as.integer(input$timesteps2)], class = "timesteps")
     })
 }
 

@@ -94,7 +94,7 @@ plot_dendrogram <- function(weibo_t1_n = 0,
   plot(
     clust,
     main = paste(sum, 'Selected Posts'),
-    cex = 0.7,
+    cex = 1.15,
     xlab = "",
     sub = "")
 }

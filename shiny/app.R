@@ -13,6 +13,7 @@ source("system_setup.R")
 source("word2vec.R")
 source("plot_dendrogram.R")
 source("plot_network.R")
+source("wordfreq_viz.R")
 ggplot2::theme_set(theme_bw())
 
 
@@ -34,8 +35,22 @@ timesteps <- seq_along(timesteps_li)
 ui <- bootstrapPage(
     includeCSS("www/custom.css"),
     navbarPage(
-        "TA Project Demo", theme = shinytheme("flatly"), collapsible = TRUE, selected = "詞向量",
-        tabPanel(title = "詞頻", icon = icon("bar-chart")),
+        "TA Project Demo", theme = shinytheme("flatly"), collapsible = TRUE, selected = "詞頻",
+        tabPanel(title = "詞頻", icon = icon("bar-chart"),
+                 sidebarLayout(
+                     sidebarPanel(
+                         textInput(
+                             inputId = "wordfreq_selected_words", 
+                             label = "詞彙：", 
+                             value = "美國, 臺灣, 中國"
+                         ),
+                     ),
+                     # Plot
+                     mainPanel(
+                         plotOutput("wordfreqPlot", width = "90%", height = "680px")
+                         )
+                     )
+                 ),
         tabPanel(title = "LSA", icon = icon("line-chart"),
                  # Input
                  sidebarLayout(
@@ -52,7 +67,7 @@ ui <- bootstrapPage(
                          sliderInput(
                             inputId = "samplePostNum",
                             label = "文章數",
-                            min = 1, max = 500, step = 1,
+                            min = 1, max = 85, step = 1,
                             value = 10
                          ),
                          checkboxGroupInput(
@@ -67,8 +82,8 @@ ui <- bootstrapPage(
                          ),
                      # Plot
                      mainPanel(
-                         plotOutput("lsaDendroPlot", width = "90%", height = "520px"),
-                         plotOutput("lsaNetworkPlot", width = "90%", height = "520px")
+                         plotOutput("lsaDendroPlot", width = "98%", height = "520px"),
+                         plotOutput("lsaNetworkPlot", width = "98%", height = "520px")
                          )
                      )
                  ),
@@ -117,6 +132,7 @@ ui <- bootstrapPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+    # Word embedding
     output$word2vecPlot <- renderPlot({
         embed_viz(
             words = input$keyterms,
@@ -124,15 +140,18 @@ server <- function(input, output) {
             source = input$source2
         )
     })
+    output$selectedTimeStepStr <- renderUI({
+        tags$ul(timesteps_li[as.integer(input$timesteps)], class = "timesteps")
+    })
     
+    # LSA
     output$lsaNetworkPlot <- renderPlot({
         plot_network_shiny(
             timesteps = input$timesteps2,
             n = input$samplePostNum,
-            src = input$source
+            src = input$source2
         )
     })
-    
     output$lsaDendroPlot <- renderPlot({
         plot_dendrogram_shiny(
             timesteps = input$timesteps2,
@@ -140,14 +159,16 @@ server <- function(input, output) {
             src = input$source2
         )
     })
-    
-    output$selectedTimeStepStr <- renderUI({
-        tags$ul(timesteps_li[as.integer(input$timesteps)], class = "timesteps")
-    })
-    
     output$selectedTimeStepStr2 <- renderUI({
         tags$ul(timesteps_li[as.integer(input$timesteps2)], class = "timesteps")
     })
+    
+    # Word Frequency
+    output$wordfreqPlot <- renderPlot({
+        words <- strsplit(input$wordfreq_selected_words, ",")[[1]]
+        freq_viz(words = trimws(words))
+    })
+
 }
 
 # Run the application

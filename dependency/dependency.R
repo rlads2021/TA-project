@@ -19,6 +19,7 @@ dependency_viz <- function(word,
   
   ggplot(matched, aes(reorder(verb, freq), freq)) +
     geom_col(aes(fill = src), position = 'dodge') +
+    scale_fill_manual(values = c('#00b81f', '#f8766d')) +
     facet_wrap(~timestep, scales = 'free') +
     coord_flip() +
     labs(x = 'Collacating Verbs',

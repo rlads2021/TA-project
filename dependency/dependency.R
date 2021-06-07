@@ -6,24 +6,25 @@ dependency_df <- read_csv('data/dependency.csv')
 # timesteps: multi-select
 # sources: checkbox
 
-plot <- function(word,
-                 timesteps,
-                 sources = c('weibo', 'ptt')) {
+dependency_viz <- function(word,
+                           timesteps,
+                           sources = c('weibo', 'ptt')) {
   matched <- dependency_df %>%
     filter(keyword == word,
            timestep %in% timesteps,
            src %in% sources) %>%
-    group_by(src, timestep) %>%
     arrange(-freq) %>%
-    top_n(10)
+    group_by(timestep, src) %>%
+    slice(1:10)
   
   ggplot(matched, aes(reorder(verb, freq), freq)) +
     geom_col(aes(fill = src), position = 'dodge') +
     facet_wrap(~timestep, scales = 'free') +
     coord_flip() +
-    xlab('Dependency Verbs') +
-    ylab('Frequency')
+    labs(x = 'Collacating Verbs',
+         y = 'Frequency',
+         title = paste0('Collacating Verbs of "', word, '"'))
 }
 
 
-plot('臺灣', c('t1', 't2', 't3', 't4'))
+dependency_viz('臺灣', c('t1', 't2', 't3', 't4'))

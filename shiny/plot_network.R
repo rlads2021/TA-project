@@ -88,6 +88,8 @@ plot_network <- function(weibo_t1_n = 0,
   
   ## plotting
   textplot_network(as.dfm(doc_sim),
+                   min_freq = 0.92,
+                   edge_size = 0.6,
                    vertex_labelsize = 4.3)
 }
 

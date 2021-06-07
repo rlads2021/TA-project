@@ -91,34 +91,24 @@ ui <- bootstrapPage(
                  # Input
                  sidebarLayout(
                      sidebarPanel(
-                         selectInput(
-                             inputId = "keyterms",
-                             label = "詞彙：",
-                             choices = keyterms,
-                             selected = keyterms[1:3],
-                             multiple = TRUE,
-                             width = NULL,
-                             size = NULL),
+                        textInput(
+                             inputId = "keyterms", 
+                             label = "詞彙：", 
+                             value = "美國, 臺灣"
+                         ),
                          selectInput(
                              inputId = "timesteps",
                              label = "時間點：",
                              choices = timesteps,
-                             selected = timesteps[1:2],
+                             selected = timesteps[6:8],
                              multiple = TRUE,
                              width = NULL,
                              size = NULL),
-                         checkboxGroupInput(
-                             inputId = "source",
-                             label = "來源：",
-                             choices = c("微博" = "weibo", "PTT" = "ptt"),
-                             selected = c("weibo", "ptt"),
-                             inline = TRUE,
-                             width = NULL),
                          HTML("<label>區間：</label>"),
                          uiOutput("selectedTimeStepStr")
                          ),
                      # Plot
-                     mainPanel(plotOutput("word2vecPlot", width = "90%", height = "520px")))
+                     mainPanel(plotOutput("word2vecPlot", width = "100%", height = "580px")))
                  ),
         tabPanel(title = "搭配詞", icon = icon("cloud", lib = "glyphicon")),
         tabPanel(title = "句法依存", icon = icon("table"))
@@ -134,10 +124,10 @@ ui <- bootstrapPage(
 server <- function(input, output) {
     # Word embedding
     output$word2vecPlot <- renderPlot({
+        words <- strsplit(input$keyterms, ",")[[1]]
         embed_viz(
-            words = input$keyterms,
-            timesteps = input$timesteps,
-            source = input$source2
+            search_terms = trimws(words),
+            timesteps = input$timesteps
         )
     })
     output$selectedTimeStepStr <- renderUI({

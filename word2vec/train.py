@@ -2,40 +2,26 @@ import re
 import csv
 import pathlib
 import numpy as np
-from sklearn.decomposition import PCA
+from tqdm import tqdm
 from gensim.models import Word2Vec, KeyedVectors
 
-TRAIN = pathlib.Path('keyterm_annotated_wv_train.txt')
-OUTPUT = pathlib.Path('wv.model.bin')
-OUTPUT_PCA = 'keyterms.pca.csv'
+VEC_DIM = 50
+WINDOW = 4
+MIN_COUNT = 5
+TRAIN = pathlib.Path("../data/time_sliced_collapsed/")
+MODEL = pathlib.Path("model/")
 
 
 def main():
-    # Load word2vec model
-    if OUTPUT.exists():
-        wv = KeyedVectors.load(str(OUTPUT))
-    else:
-        # Train word2vec model
-        model = Word2Vec(SentenceIterator(TRAIN), size=100, window=4, min_count=5, sg=1, workers=4)
-        wv = model.wv
-        wv.save(str(OUTPUT))
+    for fp in tqdm(list(TRAIN.glob("*.txt"))):
+        output = MODEL / (fp.stem + ".model")
+        train_text_file(fp, output)
 
-    # Extract keyterms' vectors
-    pat_anno = re.compile(r"_(weibo|ptt)_T\d{1,2}")
-    words = [ w for w in wv.vocab if pat_anno.search(w) ]
-    keyterms_wv = np.array([wv[w] for w in words])
 
-    # Perform PCA on keyterm vector space
-    twodim = PCA().fit_transform(keyterms_wv)[:, :2]
-
-    # Save PCA results
-    with open(OUTPUT_PCA, "w", encoding="utf-8", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(["word", "src", "timestep", "PC1", "PC2"])
-
-        for word, (pc1, pc2) in zip(words, twodim):
-            word, src, ts = word.split("_")
-            writer.writerow([word, src, ts[1:], pc1, pc2])
+def train_text_file(infile, output):
+    # Train word2vec model
+    model = Word2Vec(SentenceIterator(infile), size=VEC_DIM, window=WINDOW, min_count=MIN_COUNT, sg=1, workers=4)
+    model.save(str(output))
 
 
 class SentenceIterator: 

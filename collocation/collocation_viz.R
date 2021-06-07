@@ -6,19 +6,20 @@ library(stringr)
 
 all_colloc <- readRDS("./data/all_files_collocation.RDS")
 
-word <- "原則" # also used for line 67 as graph title
-
 # filter for specific data and output a summary table
 # can only search one word for a time
 summary_tbl <- function(word, source = c("weibo", "ptt"), timesteps = c(1:3), count = 50) {
-  # df for words at front
+  
+  # tbl for words at front
   front <- all_colloc %>% filter(collo_2 %in% word, src %in% source, timestep %in% timesteps, a > count) %>%
     select(-collo_2) %>% 
     rename(word = collo_1)
-  # df for words at rear
+  
+  # tbl for words at rear
   back <- all_colloc %>% filter(collo_1 %in% word, src %in% source, timestep %in% timesteps, a > count) %>% 
     select(-collo_1) %>% 
     rename(word = collo_2)
+  
   # summary table
   tbl <- bind_rows("front" = front, "back" = back, .id = "frontness") %>% 
     group_by(src, timestep) %>% 
@@ -29,10 +30,9 @@ summary_tbl <- function(word, source = c("weibo", "ptt"), timesteps = c(1:3), co
   return(tbl)
 }
 
-colloc_to_plot <- summary_tbl(word = word, source = c("weibo", "ptt"), timesteps = c(1:5), count = 10)
-
 # plot 
-colloc_viz <- function(df) {
+colloc_viz <- function(word, df) {
+  
   # set group id to plot for every group 
   # (first by src, then by timestep)
   df <- df %>% bind_cols(gid = group_indices(df))
@@ -43,21 +43,30 @@ colloc_viz <- function(df) {
   timesteps <- gsub("2020", "20", timesteps)
   timesteps <- timesteps %>%
     str_replace_all("(\\d{2})/(\\d{2})/(\\d{2})", "\\2.\\3.\\1")
+  
   # Replace facet label with timesteps
   ts <- rep(timesteps[unique(df$timestep)], n_distinct(df$src))
   names(ts) <- group_keys(df)$timestep
 
+  # plot by (src, timestep) for every i, 
   N <-  n_groups(df)
   lst <- vector("list", N)
-  # plot by (src, timestep) for every i, 
   for (i in 1:N) {
-    p <- ggplot(data = filter(df, gid %in% i)) +
+    g_df <- df %>% filter(gid %in% i) 
+    p <- ggplot(data = g_df) +
       geom_bar(aes(x = reorder(word, MI), y = MI, fill = frontness), stat = "identity") +
+      scale_fill_manual(name = "word",
+                        values = c("front" = "#F8766D",
+                                   "back" = "#00BFC4")) +
       facet_grid(src ~ timestep, labeller = labeller(timestep = ts[i])) + 
       theme(axis.title.x = element_blank(), 
             axis.title.y = element_blank()) +
       labs(fill = "located at") +
       coord_flip()
+    # remove redundant legend for fill
+    if (n_distinct(g_df$frontness) == 1) {
+      p <- p + theme(legend.position = "none") 
+    }
     # then save all plots in a list 
     lst[[i]] <- p
   }
@@ -71,4 +80,7 @@ colloc_viz <- function(df) {
   return(patched)
 }
 
-colloc_viz(colloc_to_plot)
+colloc_viz_shiny <- function(word) {
+  d <- summary_tbl(word)
+  colloc_viz(word, d)
+}

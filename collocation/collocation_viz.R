@@ -38,7 +38,7 @@ colloc_viz <- function(df) {
   df <- df %>% bind_cols(gid = group_indices(df))
   
   # Add time step info
-  timesteps <- gsub("_", " ~ ", readLines("./timesteps.txt"))
+  timesteps <- gsub("_", " ~ ", readLines("./data/timesteps.txt"))
   timesteps <- gsub("-", "/", timesteps)
   timesteps <- gsub("2020", "20", timesteps)
   timesteps <- timesteps %>%

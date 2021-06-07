@@ -4,9 +4,9 @@ library(ggplot2)
 library(patchwork)
 library(stringr)
 
-all_colloc <- readRDS("./all_files_collocation_MI.RDS")
+all_colloc <- readRDS("./data/all_files_collocation.RDS")
 
-word <- "原則"
+word <- "原則" # also used for line 67 as graph title
 
 # filter for specific data and output a summary table
 # can only search one word for a time

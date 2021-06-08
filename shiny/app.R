@@ -9,6 +9,7 @@
 
 library(shiny)
 library(shinythemes)
+library(patchwork)
 source("system_setup.R")
 source("word2vec.R")
 source("plot_dendrogram.R")
@@ -16,6 +17,7 @@ source("plot_network.R")
 source("wordfreq_viz.R")
 source("dependency.R")
 source("collocation_viz.R")
+source("topic_viz.R")
 ggplot2::theme_set(theme_bw())
 
 
@@ -157,7 +159,24 @@ ui <- bootstrapPage(
                          )
                      )
                  ),
-        tabPanel(title = "主題模型", icon = icon("palette")),
+        tabPanel(title = "主題模型", icon = icon("palette"),
+                 sidebarLayout(
+                     sidebarPanel(
+                        textInput(
+                             inputId = "keytermTopic", 
+                             label = "詞彙 (只可輸入一個，可用 Regex)：", 
+                             value = "臺灣"
+                         ),
+                         HTML("<label>區間：</label>"),
+                         uiOutput("selectedTimeStepStrTopic")
+                         ),
+                     # Plot
+                     mainPanel(
+                         plotOutput("topic1Plot", width = "100%", height = "400px"),
+                         plotOutput("topic2Plot", width = "100%", height = "400px")
+                         )
+                     )
+                 ),
         tabPanel(title = "LSA", icon = icon("line-chart"),
                  # Input
                  sidebarLayout(
@@ -251,6 +270,29 @@ server <- function(input, output) {
         }
         out_html = paste(out_html, collapse = "\n")
         tags$div(HTML(out_html), class = "most-similar-words-by-src")
+    })
+    
+    #### Topic Modeling ####
+    output$topic1Plot <- renderPlot({
+      word <- input$keytermTopic
+      
+      patched <- list(
+        topic_viz(trimws(word), "ptt"),
+        topic_viz2(trimws(word), "ptt")
+      )
+      wrap_plots(patched)
+    })
+    output$topic2Plot <- renderPlot({
+      word <- input$keytermTopic
+      
+      patched <- list(
+        topic_viz(trimws(word), "wei"),
+        topic_viz2(trimws(word), "wei")
+      )
+      wrap_plots(patched)
+    })
+    output$selectedTimeStepStrTopic <- renderUI({
+        tags$ul(timesteps_li, class = "timesteps")
     })
     
     #### Dependency parsing ####

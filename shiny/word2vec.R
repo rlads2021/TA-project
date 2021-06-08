@@ -46,6 +46,20 @@ embed_viz <- function(search_terms, timesteps = 1:4) {
  
 
 # Query Most similar words
+most_simil_multiple <- function(words, time, topn = 10) {
+   src <- c("ptt", "weibo")
+   words <- paste(rep(words, each=2), src, sep = "_")
+   
+   x <- lapply(words, function(word) {
+      word <- strsplit(word, "_")[[1]]
+      src <- word[2]
+      word <- word[1]
+      most_simil(word, time, src, topn)
+   })
+   names(x) <- words
+   return(x)
+}
+
 most_simil <- function(word, time, src, topn = 10) {
   wv <- read_wv(time, src)
   word <- wv[word, ]

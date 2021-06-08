@@ -28,3 +28,50 @@ span.timestep-num::before {
    font-weight: bold;
    color: #2c3e50;
 }
+
+
+/* Most similar words */
+.ptt span.seed {
+   display: inline-block;
+   color: #4B878BFF;
+   font-weight: bold;
+}
+.weibo span.seed {
+   display: inline-block;
+   color: #D01C1FFF;
+   font-weight: bold;
+}
+.ptt span.seed::after {
+   display: inline-block;
+   width: 2.8em;
+   margin-left: 0.25em;
+   content: " (PTT)";
+   font-weight: normal;
+   font-size: 0.9em;
+}
+.weibo span.seed::after {
+   display: inline-block;
+   width: 2.8em;
+   margin-left: 0.25em;
+   content: " (微博)";
+   font-weight: normal;
+   font-size: 0.9em;
+}
+
+div.simil_words {
+   display: inline-block;
+   margin-left: 1em;
+}
+
+div.simil_words span.word {
+   margin: 0 0.23em;
+   display: inline-block;
+   min-width: 3em;
+}
+
+div.simil_words span.word span.similarity {
+   display: inline-block;
+   margin-left: 0.1em;
+   font-size: 0.85em;
+   color: rgb(77, 77, 77);
+}

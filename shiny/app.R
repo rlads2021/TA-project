@@ -35,7 +35,7 @@ timesteps <- seq_along(timesteps_li)
 ui <- bootstrapPage(
     includeCSS("www/custom.css"),
     navbarPage(
-        "TA Project Demo", theme = shinytheme("flatly"), collapsible = TRUE, selected = "詞頻",
+        "兩岸社群媒體中的臺灣形象", theme = shinytheme("flatly"), collapsible = TRUE, selected = "詞頻",
         tabPanel(title = "詞頻", icon = icon("bar-chart"),
                  sidebarLayout(
                      sidebarPanel(
@@ -44,13 +44,61 @@ ui <- bootstrapPage(
                              label = "詞彙：", 
                              value = "美國, 臺灣, 中國"
                          ),
+                         HTML("<label>區間：</label>"),
+                         uiOutput("selectedTimeStepStrWordfreq")
                      ),
                      # Plot
                      mainPanel(
-                         plotOutput("wordfreqPlot", width = "90%", height = "680px")
+                         plotOutput("wordfreqPlot", width = "100%", height = "680px")
                          )
                      )
                  ),
+        tabPanel(title = "搭配詞", icon = icon("project-diagram")),
+        tabPanel(title = "詞向量", icon = icon("location-arrow"),
+                 # Input
+                 sidebarLayout(
+                     sidebarPanel(
+                        HTML("<h3>歷時語意軌跡</h3>"),
+                        textInput(
+                             inputId = "keyterms", 
+                             label = "詞彙：", 
+                             value = "美國, 臺灣"
+                         ),
+                        sliderInput(
+                           inputId = "timesteps",
+                           label = "時間：",
+                           min = min(timesteps),
+                           max = max(timesteps),
+                           value = c(6, 8),
+                           step = 1, round = T
+                        ),
+                        HTML("<label>區間</label>"),
+                        uiOutput("selectedTimeStepStr"),
+                        
+                        HTML("<h3>近似詞</h3>"),
+                        selectInput(
+                          inputId = "timestepsMostSimil",
+                          label = "時間：",
+                          choices = timesteps,
+                          selected = 7,
+                          multiple = FALSE,
+                          selectize = TRUE
+                        ),
+                        sliderInput(
+                           inputId = "numMostSimil",
+                           label = "Top n：",
+                           min = 3,
+                           max = 60,
+                           value = 5,
+                           step = 1, round = T
+                        ),
+                        uiOutput("mostSimilarWords"),
+                     ), 
+                     # Plot
+                     mainPanel(plotOutput("word2vecPlot", width = "100%", height = "580px")))
+                 ),
+        tabPanel(title = "句法依存", icon = icon("tree")),
+        tabPanel(title = "主題模型", icon = icon("palette")),
         tabPanel(title = "LSA", icon = icon("line-chart"),
                  # Input
                  sidebarLayout(
@@ -86,32 +134,8 @@ ui <- bootstrapPage(
                          plotOutput("lsaNetworkPlot", width = "98%", height = "520px")
                          )
                      )
-                 ),
-        tabPanel(title = "詞向量", icon = icon("location-arrow"),
-                 # Input
-                 sidebarLayout(
-                     sidebarPanel(
-                        textInput(
-                             inputId = "keyterms", 
-                             label = "詞彙：", 
-                             value = "美國, 臺灣"
-                         ),
-                         selectInput(
-                             inputId = "timesteps",
-                             label = "時間點：",
-                             choices = timesteps,
-                             selected = timesteps[6:8],
-                             multiple = TRUE,
-                             width = NULL,
-                             size = NULL),
-                         HTML("<label>區間：</label>"),
-                         uiOutput("selectedTimeStepStr")
-                         ),
-                     # Plot
-                     mainPanel(plotOutput("word2vecPlot", width = "100%", height = "580px")))
-                 ),
-        tabPanel(title = "搭配詞", icon = icon("cloud", lib = "glyphicon")),
-        tabPanel(title = "句法依存", icon = icon("table"))
+                 )
+        
     ),
     HTML('<span class="src-link" title="原始碼">
             <a href="https://github.com/rlads2021/TA-project" target="_blank" style="color:black">
@@ -125,13 +149,49 @@ server <- function(input, output) {
     # Word embedding
     output$word2vecPlot <- renderPlot({
         words <- strsplit(input$keyterms, ",")[[1]]
+        rng <- input$timesteps
+        timesteps
         embed_viz(
             search_terms = trimws(words),
-            timesteps = input$timesteps
+            timesteps = seq(rng[1], rng[2], by = 1)
         )
     })
     output$selectedTimeStepStr <- renderUI({
-        tags$ul(timesteps_li[as.integer(input$timesteps)], class = "timesteps")
+        rng <- input$timesteps
+        rng <- seq(rng[1], rng[2], by = 1)
+        tags$ul(timesteps_li[rng], class = "timesteps")
+    })
+    output$mostSimilarWords <- renderUI({
+        time = input$timestepsMostSimil
+        topn = input$numMostSimil
+        words <- strsplit(input$keyterms, ",")[[1]] %>% trimws()
+        simil <- most_simil_multiple(words, time, topn = topn)
+        
+        out_html <- vector("character", length(simil))
+        for (i in seq_along(simil)) {
+           nm <- strsplit(names(simil)[i], "_")[[1]]
+           word <- nm[1]
+           src <- nm[2]
+           
+           simil_words <- simil[[i]]
+           simil_words <- paste0(
+              '<span class="word">',
+              '<span class="form">', names(simil_words), '</span>',
+              '<span class="similarity">', round(simil_words, 2), '</span>',
+              '</span>'
+           )
+           simil_words <- paste0(
+              "<div class='", src, "'>", 
+                  "<span class='seed'>", word, "</span>",
+                  "<div class='simil_words'>", 
+                     paste(simil_words, collapse = ""), 
+                  "</div>",
+              "</div>"
+            )
+           out_html[i] <- simil_words
+        }
+        out_html = paste(out_html, collapse = "\n")
+        tags$div(HTML(out_html), class = "most-similar-words-by-src")
     })
     
     # LSA
@@ -157,6 +217,9 @@ server <- function(input, output) {
     output$wordfreqPlot <- renderPlot({
         words <- strsplit(input$wordfreq_selected_words, ",")[[1]]
         freq_viz(words = trimws(words))
+    })
+    output$selectedTimeStepStrWordfreq <- renderUI({
+       tags$ul(timesteps_li, class = "timesteps")
     })
 
 }

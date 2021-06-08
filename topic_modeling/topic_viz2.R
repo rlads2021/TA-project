@@ -1,24 +1,14 @@
-library(broom)
-library(tm)
-library(topicmodels)
 library(reshape2)
 library(ggplot2)
-library(pals)
-library(showtext)
-library(tidytext)
-library(stm)
 library(dplyr)
-library(quanteda.textstats)
-library(tidyverse)
-library(tidyr)
-library(quanteda)
-doc_dtm_group<-readRDS(file = "/doc_dtm_group.rds")
-searchterms<- readRDS("/searchterms.rds")
-top5termsPerTopic<-readRDS("/top5termsPerTopic.rds")
-topicNames<- readRDS("/topicNames.rds")
-theta<-readRDS("/theta.rds")
 
-topic_viz_2 <- function(word,topicThreshold,sources){
+doc_dtm_group<-readRDS(file = "doc_dtm_group.rds")
+searchterms<- readRDS("searchterms.rds")
+top5termsPerTopic<-readRDS("top5termsPerTopic.rds")
+topicNames<- readRDS("topicNames.rds")
+theta<-readRDS("theta.rds")
+
+topic_viz2 <- function(word, sources){
   topicToFilter <- grep(word, searchterms) #search terms是所有文章資料有斷出的詞彙來找
   topicThreshold <- 0.2
   selected <- list()
@@ -43,13 +33,17 @@ topic_viz_2 <- function(word,topicThreshold,sources){
   # plot topic proportions per decade as bar plot
   # Make plots wider 
   options(repr.plot.width=30, repr.plot.height=20)
-  showtext_auto()
   p<- ggplot(vizDataFrame, aes(x=time, y=value, colour = variable, group = variable)) + 
-    geom_point() + geom_line(size = 3) 
+    geom_point() + geom_line(size = 1, alpha = 0.55) +
+    labs(colour = "主題",  y = "比例", x = "時間",
+         title = paste0(
+           ifelse(sources == "ptt", "PTT ", "微博"),
+           "內文含有「", word , "」之文章主題比例分佈")
+    )
     
-  
-  
-  
   return(p)
 }
+#' Usage: 
+#' topic_viz2("臺灣", "ptt")
+#' topic_viz2("臺灣", "wei")
 

@@ -4,7 +4,7 @@ library(topicmodels)
 library(reshape2)
 library(ggplot2)
 library(pals)
-library(showtext)
+# library(showtext)
 library(tidytext)
 library(stm)
 library(dplyr)
@@ -39,7 +39,7 @@ topic_viz <- function(word,topicThreshold,sources){
   # plot topic proportions per decade as bar plot
   # Make plots wider 
   options(repr.plot.width=30, repr.plot.height=20)
-  showtext_auto()
+  #showtext_auto()
   p<- ggplot(vizDataFrame, aes(x=time, y=value, colour = variable, group = variable)) + 
     geom_point() + geom_line(size = 3)  
     

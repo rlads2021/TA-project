@@ -50,12 +50,15 @@ colloc_viz <- function(word, df) {
 
   # plot by (src, timestep) for every i, 
   N <-  n_groups(df)
-  lst <- vector("list", N)
+  lst_ptt <- vector("list", N)
+  lst_weibo <- vector("list", N)
   for (i in 1:N) {
+    # group data for every i
     g_df <- df %>% filter(gid %in% i) 
     p <- ggplot(data = g_df) +
       geom_bar(aes(x = reorder(word, MI), y = MI, fill = frontness), stat = "identity") +
-      scale_fill_manual(name = "word",
+      # fix fill color to match value, not by alphabetic order
+      scale_fill_manual(name = "located at",
                         values = c("front" = "#F8766D",
                                    "back" = "#00BFC4")) +
       facet_grid(src ~ timestep, labeller = labeller(timestep = ts[i])) + 
@@ -67,18 +70,36 @@ colloc_viz <- function(word, df) {
     if (n_distinct(g_df$frontness) == 1) {
       p <- p + theme(legend.position = "none") 
     }
-    # then save all plots in a list 
-    lst[[i]] <- p
+    # then save plots according to source in two different list 
+    if (g_df$src[1] == "ptt") {
+      lst_ptt[[i]] <- p
+    } else {
+      lst_weibo[[i]] <- p
+    }
+    
   }
   
-  # assembling all plots on a graph
-  patched <- wrap_plots(lst, nrow = 2, byrow = TRUE) + 
-    plot_annotation(title = paste0("Collocation of \"", word, "\""),
-                    subtitle = "Sort by Mutual Information (MI) Score") + 
-    plot_layout(guides = "collect")
-
+  # assembling plots according to source on two different graph
+  patched <- vector("list", 2)
+  names(patched) <- c("ptt", "weibo")
+  for (lst in c(lst_ptt, lst_weibo)) {
+    if (length(lst) >= 5) {
+      src_patch <- wrap_plots(lst, ncol = 3, byrow = TRUE) + 
+        plot_annotation(title = paste0("Collocation of \"", word, "\""),
+                        subtitle = "Sort by Mutual Information (MI) Score") + 
+        plot_layout(guides = "collect") 
+    } else {
+      src_patch <- wrap_plots(lst, ncol = 4, byrow = TRUE) + 
+        plot_annotation(title = paste0("Collocation of \"", word, "\""),
+                        subtitle = "Sort by Mutual Information (MI) Score") + 
+        plot_layout(guides = "collect")
+    }
+    patched[[i]] <- src_patch
+  }
+  
   return(patched)
 }
+
 
 colloc_viz_shiny <- function(word) {
   d <- summary_tbl(word)

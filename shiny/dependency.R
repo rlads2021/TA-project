@@ -1,7 +1,10 @@
 library(dplyr)
 library(ggplot2)
 
-dependency_df <- read_csv('data/dependency.csv') 
+#dependency_df <- readr::read_csv('data/dependency.csv') %>%
+#   mutate(timestep = gsub("t", "", timestep) %>% as.integer)
+#saveRDS(dependency_df, "data/dependency.rds")
+dependency_df <- readRDS("data/dependency.rds")
 
 # word: single-select from c('台灣', '美國', '中國')
 # timesteps: multi-select
@@ -20,7 +23,7 @@ dependency_viz <- function(word,
   
   ggplot(matched, aes(reorder(verb, freq), freq)) +
     geom_col(aes(fill = src), position = 'dodge') +
-    scale_fill_manual(values = c('#00b81f', '#f8766d')) +
+    scale_fill_manual(values = c("#4B878BFF", "#D01C1FFF")) +
     facet_wrap(~timestep, scales = 'free') +
     coord_flip() +
     labs(x = 'Collacating Verbs',
@@ -28,4 +31,4 @@ dependency_viz <- function(word,
          title = paste0('Collacating Verbs of "', word, '"'))
 }
 
-# dependency_viz('臺灣', c('t1', 't2', 't3', 't4'))
+# dependency_viz('臺灣', 1:9)

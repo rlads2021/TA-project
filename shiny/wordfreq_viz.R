@@ -4,7 +4,7 @@ library(stringr)
 
 
 all_files_freq <- readRDS("data/word_freq.RDS")
-
+timesteps <- readLines("data/timesteps.txt")
 
 freq_viz <- function(words){
   

@@ -14,6 +14,7 @@ source("word2vec.R")
 source("plot_dendrogram.R")
 source("plot_network.R")
 source("wordfreq_viz.R")
+source("dependency.R")
 ggplot2::theme_set(theme_bw())
 
 
@@ -97,7 +98,31 @@ ui <- bootstrapPage(
                      # Plot
                      mainPanel(plotOutput("word2vecPlot", width = "100%", height = "580px")))
                  ),
-        tabPanel(title = "句法依存", icon = icon("tree")),
+        tabPanel(title = "句法依存", icon = icon("tree"),
+                 sidebarLayout(
+                     sidebarPanel(
+                        textInput(
+                             inputId = "keytermDep", 
+                             label = "詞彙 (只可輸入一個)：", 
+                             value = "臺灣"
+                         ),
+                         sliderInput(
+                           inputId = "timestepsDep",
+                           label = "時間：",
+                           min = min(timesteps),
+                           max = max(timesteps),
+                           value = c(6, 8),
+                           step = 1, round = T
+                           ),
+                         HTML("<label>區間：</label>"),
+                         uiOutput("selectedTimeStepStrDep")
+                         ),
+                     # Plot
+                     mainPanel(
+                         plotOutput("depPlot", width = "98%", height = "680px"),
+                         )
+                     )
+                 ),
         tabPanel(title = "主題模型", icon = icon("palette")),
         tabPanel(title = "LSA", icon = icon("line-chart"),
                  # Input
@@ -146,7 +171,7 @@ ui <- bootstrapPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-    # Word embedding
+    #### Word embedding ####
     output$word2vecPlot <- renderPlot({
         words <- strsplit(input$keyterms, ",")[[1]]
         rng <- input$timesteps
@@ -194,7 +219,21 @@ server <- function(input, output) {
         tags$div(HTML(out_html), class = "most-similar-words-by-src")
     })
     
-    # LSA
+    #### Dependency parsing ####
+    output$depPlot <- renderPlot({
+       rng <- input$timestepsDep
+       rng <- seq(rng[1], rng[2], by = 1)
+       dependency_viz(word = trimws(input$keytermDep), 
+                      timesteps = rng)
+    })
+    output$selectedTimeStepStrDep <- renderUI({
+       rng <- input$timestepsDep
+       rng <- seq(rng[1], rng[2], by = 1)
+        tags$ul(timesteps_li[rng], 
+                class = "timesteps")
+    })
+    
+    #### LSA ####
     output$lsaNetworkPlot <- renderPlot({
         plot_network_shiny(
             timesteps = input$timesteps2,
@@ -213,7 +252,7 @@ server <- function(input, output) {
         tags$ul(timesteps_li[as.integer(input$timesteps2)], class = "timesteps")
     })
     
-    # Word Frequency
+    #### Word Frequency ####
     output$wordfreqPlot <- renderPlot({
         words <- strsplit(input$wordfreq_selected_words, ",")[[1]]
         freq_viz(words = trimws(words))

@@ -6,7 +6,7 @@ library(quanteda.textstats)
 library(tibble)
 
 #read files
-all_files <- list.files("./time_sliced_collapsed", full.names = T)
+all_files <- list.files("../data/time_sliced_collapsed", full.names = T)
 
 collocate <- function(article) {
   
@@ -27,6 +27,13 @@ collocate <- function(article) {
   # split collocation for further searching
   collo_df$collo_1 <- sapply(collo_df$collocation, function(x) strsplit(x, " ")[[1]][1], USE.NAMES = F)
   collo_df$collo_2 <- sapply(collo_df$collocation, function(x) strsplit(x, " ")[[1]][2], USE.NAMES = F)
+  
+  # remove redundant collocation pair
+  collo_df <- collo_df %>% group_by(collo_1, collo_2) %>% 
+    mutate(count = sum(count)) %>% 
+    select(-collocation) %>% 
+    distinct() %>% 
+    ungroup()
   
   # toward MI score
   ## total 
@@ -73,7 +80,7 @@ collocate <- function(article) {
            # Rel = a / (a + b ),
            MI = log2(a / e)) %>% 
     # extracting essential info 
-    select(collo_1, collo_2, a, MI, Attr, Rel)
+    select(collo_1, collo_2, a, MI)
   
   # adding source and timestep info
   article_name <- gsub(".txt", "", basename(article), fixed = T)
@@ -83,9 +90,9 @@ collocate <- function(article) {
   return(collo_df)
 }
 
-all_files_collocation <- lapply(all_files, function(x)(collocate(x))) %>%
+all_files_collocation <- lapply(all_files, function(x) (collocate(x))) %>%
   bind_rows() %>% 
   mutate(timestep = factor(timestep, ordered = T))
 
-saveRDS(all_files_collocation, "all_files_collocation_MAR.rds")
+saveRDS(all_files_collocation, "./data/all_files_collocation.rds")
 # write_csv(all_files_collocation, 'all_files_collocation_MI.csv')

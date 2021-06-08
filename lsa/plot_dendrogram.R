@@ -12,6 +12,7 @@ lsa_df <- as_tibble(lsa, rownames = 'doc') %>%
   mutate(idx = row_number())
 
 # <src>_<timestep>_<n>: single-select from 0-10
+# selected_seed: single-select integer
 
 plot_dendrogram <- function(weibo_t1_n = 0,
                             weibo_t2_n = 0,
@@ -30,7 +31,9 @@ plot_dendrogram <- function(weibo_t1_n = 0,
                             ptt_t6_n = 0,
                             ptt_t7_n = 0,
                             ptt_t8_n = 0,
-                            ptt_t9_n = 0) {
+                            ptt_t9_n = 0, 
+                            selected_seed = 10) {
+  set.seed(selected_seed)
   idx <-
     c(
       sample(lsa_df[lsa_df$src == 'weibo' &
@@ -89,6 +92,6 @@ plot_dendrogram <- function(weibo_t1_n = 0,
     sub = "")
 }
 
-plot_dendrogram(weibo_t1_n = 10, ptt_t1_n = 10)
+plot_dendrogram(weibo_t1_n = 10, ptt_t1_n = 10, selected_seed = 10)
 
 

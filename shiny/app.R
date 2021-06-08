@@ -173,7 +173,9 @@ ui <- bootstrapPage(
                      # Plot
                      mainPanel(
                          plotOutput("topic1Plot", width = "100%", height = "400px"),
-                         plotOutput("topic2Plot", width = "100%", height = "400px")
+                         plotOutput("topic2Plot", width = "100%", height = "400px"),
+                         plotOutput("topic3Plot", width = "100%", height = "400px"),
+                         plotOutput("topic4Plot", width = "100%", height = "400px")
                          )
                      )
                  ),
@@ -274,22 +276,16 @@ server <- function(input, output) {
     
     #### Topic Modeling ####
     output$topic1Plot <- renderPlot({
-      word <- input$keytermTopic
-      
-      patched <- list(
-        topic_viz(trimws(word), "ptt"),
-        topic_viz2(trimws(word), "ptt")
-      )
-      wrap_plots(patched)
+      topic_viz(trimws(input$keytermTopic), "ptt")
     })
     output$topic2Plot <- renderPlot({
-      word <- input$keytermTopic
-      
-      patched <- list(
-        topic_viz(trimws(word), "wei"),
-        topic_viz2(trimws(word), "wei")
-      )
-      wrap_plots(patched)
+       topic_viz(trimws(input$keytermTopic), "wei")
+    })
+    output$topic3Plot <- renderPlot({
+       topic_viz2(trimws(input$keytermTopic), "ptt")
+    })
+    output$topic4Plot <- renderPlot({
+       topic_viz2(trimws(input$keytermTopic), "wei")
     })
     output$selectedTimeStepStrTopic <- renderUI({
         tags$ul(timesteps_li, class = "timesteps")

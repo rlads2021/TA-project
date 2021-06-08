@@ -23,14 +23,14 @@ summary_tbl <- function(word, source = c("weibo", "ptt"), timesteps = c(1:3), co
     group_by(src, timestep) %>% 
     # select only top 10 MI score 
     slice_max(MI, n = topn) %>% 
-    rename(count = a)
+    rename(count = a) 
   
   return(tbl)
 }
 
 
-plot_single <- function(word, source, timestep, n = 10) {
-    d <- summary_tbl(word, timesteps = timestep, topn = n) %>%
+plot_single <- function(word, source, timestep, count, n = 10) {
+    d <- summary_tbl(word, timesteps = timestep, count = count, topn = n) %>%
         filter(src == source)
     # Create fake data if empty
     if (nrow(d) == 0)
@@ -42,7 +42,7 @@ plot_single <- function(word, source, timestep, n = 10) {
                         frontness = c("back", "front"),
                         stringsAsFactors = F)
     
-    ggplot(d) +
+    p <- ggplot(d) +
         geom_bar(aes(reorder(word, MI), MI, 
                      fill = frontness), stat = "identity") +
        scale_fill_manual(name = "前/後搭配詞",
@@ -51,20 +51,26 @@ plot_single <- function(word, source, timestep, n = 10) {
        facet_grid(src ~ timestep) +
        coord_flip() +
        labs(x = "")
+    
+    if (n_distinct(d$frontness) == 1) {
+      p <- p + theme(legend.position = "none") 
+    }
+    
+    return(p)
 }
 
 
-plot_src <- function(word = "新聞", source = "ptt", timesteps=1:5, n = 10) {
-    patched <- lapply(timesteps, function(ts) plot_single(word, source, ts, n))
+plot_src <- function(word = "新聞", source = "ptt", timesteps=1:5, count, n = 10) {
+    patched <- lapply(timesteps, function(ts) plot_single(word, source, ts, count, n))
     patched <- wrap_plots(patched, nrow = 1, byrow = TRUE)
     return(patched)
 }
 
 
-colloc_viz <- function(word, timesteps=1:5, n = 10) {
+colloc_viz <- function(word, timesteps=1:5, count = 25, n = 10) {
   patched <- list(
-      plot_src(word, "ptt", timesteps, n),
-      plot_src(word, "weibo", timesteps, n)
+      plot_src(word, "ptt", timesteps, count, n),
+      plot_src(word, "weibo", timesteps, count, n)
   )
   
   # assembling all plots on a graph

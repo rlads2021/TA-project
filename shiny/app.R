@@ -15,6 +15,7 @@ source("plot_dendrogram.R")
 source("plot_network.R")
 source("wordfreq_viz.R")
 source("dependency.R")
+source("collocation_viz.R")
 ggplot2::theme_set(theme_bw())
 
 
@@ -54,7 +55,40 @@ ui <- bootstrapPage(
                          )
                      )
                  ),
-        tabPanel(title = "搭配詞", icon = icon("project-diagram")),
+        tabPanel(title = "搭配詞", icon = icon("project-diagram"),
+                 sidebarLayout(
+                     sidebarPanel(
+                         textInput(
+                             inputId = "keytermCollo", 
+                             label = "詞彙 (只能輸入一個)：", 
+                             value = "臺灣"
+                         ),
+                         sliderInput(
+                           inputId = "timestepsCollo",
+                           label = "時間：",
+                           min = min(timesteps),
+                           max = max(timesteps),
+                           value = c(6, 8),
+                           step = 1, round = T
+                         ),
+                         sliderInput(
+                            inputId = "numOfCollo",
+                            label = "Top n：",
+                            min = 5,
+                            max = 30,
+                            value = 10,
+                            step = 1,
+                            round = T
+                         ), 
+                         HTML("<label>區間：</label>"),
+                         uiOutput("selectedTimeStepStrCollo")
+                     ),
+                     # Plot
+                     mainPanel(
+                         plotOutput("colloPlot", width = "100%", height = "680px")
+                         )
+                     )
+                 ),
         tabPanel(title = "詞向量", icon = icon("location-arrow"),
                  # Input
                  sidebarLayout(
@@ -259,6 +293,19 @@ server <- function(input, output) {
     })
     output$selectedTimeStepStrWordfreq <- renderUI({
        tags$ul(timesteps_li, class = "timesteps")
+    })
+    
+    #### Collocation ####
+    output$colloPlot <- renderPlot({
+       word <- trimws(input$keytermCollo)
+       rng <- input$timestepsCollo
+       rng <- seq(rng[1], rng[2], by = 1)
+       colloc_viz(word = word, timesteps = rng, n = input$numOfCollo)
+    })
+    output$selectedTimeStepStrCollo <- renderUI({
+       rng <- input$timestepsCollo
+       rng <- seq(rng[1], rng[2], by = 1)
+       tags$ul(timesteps_li[rng], class = "timesteps")
     })
 
 }

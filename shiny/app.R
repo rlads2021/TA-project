@@ -183,8 +183,8 @@ ui <- bootstrapPage(
                      mainPanel(
                          plotOutput("topic1Plot", width = "100%", height = "400px"),
                          plotOutput("topic2Plot", width = "100%", height = "400px"),
-                         plotOutput("topic3Plot", width = "100%", height = "400px"),
-                         plotOutput("topic4Plot", width = "100%", height = "400px"),
+                         #plotOutput("topic3Plot", width = "100%", height = "400px"),
+                         #plotOutput("topic4Plot", width = "100%", height = "400px"),
                          HTML(
                             "<h3><strong>PTT</strong> 歷時主題詞彙</h3>
                              <img src='https://rlads2021.github.io/TA-project/不同時間點_相關主題詞彙_PTT.png' 
@@ -303,12 +303,12 @@ server <- function(input, output) {
     output$topic2Plot <- renderPlot({
        topic_viz(trimws(input$keytermTopic), "wei")
     })
-    output$topic3Plot <- renderPlot({
-       topic_viz2(trimws(input$keytermTopic), "ptt")
-    })
-    output$topic4Plot <- renderPlot({
-       topic_viz2(trimws(input$keytermTopic), "wei")
-    })
+    # output$topic3Plot <- renderPlot({
+    #    topic_viz2(trimws(input$keytermTopic), "ptt")
+    # })
+    # output$topic4Plot <- renderPlot({
+    #    topic_viz2(trimws(input$keytermTopic), "wei")
+    # })
     output$selectedTimeStepStrTopic <- renderUI({
         tags$ul(timesteps_li, class = "timesteps")
     })

@@ -12,12 +12,13 @@ lsa_df <- as_tibble(lsa, rownames = 'doc') %>%
   mutate(idx = row_number())
 
 # <src>_<timestep>_<n>: single-select from 0-10
-plot_dendrogram_shiny <- function(timesteps = 1:3, n = 10, src = c("weibo", "ptt")) {
+plot_dendrogram_shiny <- function(timesteps = 1:3, n = 10, src = c("weibo", "ptt"), selected_seed = 10) {
    params <- rep(n, length(src) * length(timesteps))
    ts <- paste0("t", timesteps, "_n")
    ts <- paste(rep(src, each = length(timesteps)), ts, sep="_")
    names(params) <- ts
    params <- as.list(params)
+   params$selected_seed <- selected_seed
    plt <- do.call(plot_dendrogram, params)   
    print(plt)
 }
@@ -40,7 +41,9 @@ plot_dendrogram <- function(weibo_t1_n = 0,
                             ptt_t6_n = 0,
                             ptt_t7_n = 0,
                             ptt_t8_n = 0,
-                            ptt_t9_n = 0) {
+                            ptt_t9_n = 0, 
+                            selected_seed = 10) {
+  set.seed(selected_seed)
   idx <-
     c(
       sample(lsa_df[lsa_df$src == 'weibo' &
@@ -94,11 +97,11 @@ plot_dendrogram <- function(weibo_t1_n = 0,
   plot(
     clust,
     main = paste(sum, 'Selected Posts'),
-    cex = 1.15,
+    cex = 0.7,
     xlab = "",
     sub = "")
 }
 
-#plot_dendrogram(weibo_t1_n = 10, ptt_t1_n = 10)
+#plot_dendrogram(weibo_t1_n = 10, ptt_t1_n = 10, selected_seed = 10)
 
 

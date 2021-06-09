@@ -207,6 +207,12 @@ ui <- bootstrapPage(
                             min = 1, max = 85, step = 1,
                             value = 10
                          ),
+                         sliderInput(
+                            inputId = "randomSeed",
+                            label = "亂數種子",
+                            min = 1, max = 999, step = 1,
+                            value = 450
+                         ),
                          checkboxGroupInput(
                              inputId = "source2",
                              label = "來源：",
@@ -319,14 +325,16 @@ server <- function(input, output) {
         plot_network_shiny(
             timesteps = input$timesteps2,
             n = input$samplePostNum,
-            src = input$source2
+            src = input$source2,
+            selected_seed = input$randomSeed
         )
     })
     output$lsaDendroPlot <- renderPlot({
         plot_dendrogram_shiny(
             timesteps = input$timesteps2,
             n = input$samplePostNum,
-            src = input$source2
+            src = input$source2,
+            selected_seed = input$randomSeed
         )
     })
     output$selectedTimeStepStr2 <- renderUI({

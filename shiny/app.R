@@ -75,10 +75,19 @@ ui <- bootstrapPage(
                          ),
                          sliderInput(
                             inputId = "numOfCollo",
-                            label = "Top n：",
+                            label = "搭配詞前 n 名：",
                             min = 5,
-                            max = 30,
+                            max = 50,
                             value = 10,
+                            step = 1,
+                            round = T
+                         ),
+                         sliderInput(
+                            inputId = "freqThreshold",
+                            label = "最低頻率：",
+                            min = 1,
+                            max = 60,
+                            value = 15,
                             step = 1,
                             round = T
                          ), 
@@ -87,7 +96,7 @@ ui <- bootstrapPage(
                      ),
                      # Plot
                      mainPanel(
-                         plotOutput("colloPlot", width = "100%", height = "680px")
+                         plotOutput("colloPlot", width = "100%", height = "780px")
                          )
                      )
                  ),
@@ -123,7 +132,7 @@ ui <- bootstrapPage(
                         ),
                         sliderInput(
                            inputId = "numMostSimil",
-                           label = "Top n：",
+                           label = "近似詞前 n 名：",
                            min = 3,
                            max = 60,
                            value = 5,
@@ -338,7 +347,9 @@ server <- function(input, output) {
        word <- trimws(input$keytermCollo)
        rng <- input$timestepsCollo
        rng <- seq(rng[1], rng[2], by = 1)
-       colloc_viz(word = word, timesteps = rng, n = input$numOfCollo)
+       colloc_viz(word, timesteps = rng, 
+                  count = input$freqThreshold,
+                  n = input$numOfCollo)
     })
     output$selectedTimeStepStrCollo <- renderUI({
        rng <- input$timestepsCollo

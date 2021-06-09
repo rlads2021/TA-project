@@ -83,4 +83,4 @@ colloc_viz <- function(word, timesteps=1:5, count = 25, n = 10) {
 }
 
 #' Usage:
-#' colloc_viz("新聞", 1:5)
+#' colloc_viz("新聞", timesteps = 1:5, count = 25, n = 10)

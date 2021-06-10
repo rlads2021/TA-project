@@ -22,7 +22,9 @@ topic_viz <- function(word, sources){
   sources_filter <- doc_dtm_group[exampleIds,] %>% filter(group == sources) 
   
   topic_proportion_per_time <- aggregate(theta[sources_filter$ID,topicToFilter], by = list(time = sources_filter$time), mean)
-        
+  zerodf <- data.frame (time  = as.character (seq(1,9)), x=0)
+  add_zero <- anti_join(zerodf, topic_proportion_per_time, by ="time")
+  topic_proportion_per_time <- rbind(topic_proportion_per_time,add_zero)      
   # set topic names to aggregated columns
   colnames(topic_proportion_per_time)[2:(K+1)] <- topicNames [topicToFilter]  
   # reshape data frame

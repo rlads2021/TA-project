@@ -87,7 +87,7 @@ ui <- bootstrapPage(
                             label = "最低頻率：",
                             min = 1,
                             max = 60,
-                            value = 15,
+                            value = 50,
                             step = 1,
                             round = T
                          ), 

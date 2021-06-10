@@ -187,10 +187,7 @@ ui <- bootstrapPage(
                          #plotOutput("topic4Plot", width = "100%", height = "400px"),
                          HTML(
                             "<h3><strong>PTT</strong> 歷時主題詞彙</h3>
-                             <img src='https://rlads2021.github.io/TA-project/不同時間點_相關主題詞彙_PTT.png' 
-                                  style='width:100%'>
-                             <h3><strong>微博</strong>歷時主題詞彙</h3>
-                             <img src='https://rlads2021.github.io/TA-project/不同時間點_相關主題詞彙_weibo.png' 
+                             <img src='https://rlads2021.github.io/TA-project/T1_T9.png' 
                                   style='width:100%'>")
                          )
                      )

@@ -5,5 +5,3 @@
 ```r
 pagedown::chrome_print("report.Rmd", output = "G25_report.pdf")
 ```
-
-相關輸出之 PDF 檔案請見專案根目錄

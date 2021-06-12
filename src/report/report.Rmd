@@ -1,0 +1,88 @@
+---
+title: "書面報告模板 (標題)"
+subtitle: "副標題"
+author: | 
+  | 第 x 組
+  | 組員1, 組員2, 組員3, 組員4
+date: "2021-06-17"
+toc-title: "目錄"
+paperwidth: 8.27in
+paperheight: 11.69in
+output:
+  pagedown::html_paged:
+    toc: true
+    front_cover: "styles/cover.jpg"
+    back_cover: "styles/cover.jpg"
+    self_contained: false
+    css: ["styles/pagedown.css", "default-fonts", "default-page", "default"]
+#  html_document:
+#    number_sections: yes
+#    highlight: tango
+#    toc: no
+#    css: "styles/html_document.css"
+#knit: pagedown::chrome_print
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+
+如何將此 Rmd 輸出成 PDF?  
+依序執行下方指令：
+
+```r
+rmarkdown::render("index.Rmd")
+pagedown::chrome_print("index.html")
+```
+
+
+簡介
+=====================
+
+請簡要說明你們的專案
+
+```{r, fig.cap='A bar chart'}
+knitr::include_graphics("fig/relative_status_bar.png")
+```
+
+方法
+=====================
+
+請在這裡寫下方法。請在這裡寫下方法。請在這裡寫下方法。請在這裡寫下方法。請在這裡寫下方法。
+
+## 資料取得
+
+## 原始碼運作說明
+
+```{r, fig.cap='iris scatter plot'}
+knitr::include_graphics("fig/iris_scatter.png")
+```
+
+
+結果
+=====================
+
+請在這裡寫下結果。請在這裡寫下結果。請在這裡寫下結果。請在這裡寫下結果。請在這裡寫下結果。請在這裡寫下結果。
+
+
+
+討論與貢獻
+=====================
+
+請在這裡寫下討論。請在這裡寫下討論。請在這裡寫下討論。請在這裡寫下討論。
+
+
+
+附錄
+=====================
+
+## 組員分工
+
+請務必寫下各個組員的工作事項。
+
+

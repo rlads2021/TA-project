@@ -17,6 +17,7 @@ python3 train.py
 
 See `word2vec.R` for details.
 
+
 ### Usage
 
 ```r
@@ -25,5 +26,3 @@ embed_viz(words = c("國民黨", "民進黨"),
           source = c("weibo", "ptt"))
 ```
 <img src="embed_viz.png" width="60%">
-
-Shiny App demo: <https://liao961120.shinyapps.io/shiny/>

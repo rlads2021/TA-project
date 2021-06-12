@@ -1,0 +1,9 @@
+.pagedjs_page.pagedjs_first_page {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)) , var(--front-cover) !important;
+  background-size: 100%;
+}
+
+.figure .caption {
+  text-align: center;
+  font-size: 0.85em;
+}

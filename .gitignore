@@ -1,5 +1,5 @@
-/data/raw/ptt*/*.json
-/data/raw/weibo/*.csv
+/src/data/raw/ptt*/*.json
+/src/data/raw/weibo/*.csv
 .ipynb_checkpoints
 *test*
 .Rproj.user
@@ -16,7 +16,7 @@ doc_annotated_lsa.csv
 time_sliced_collapsed/*.txt
 ptt_sampled.csv
 weibo_sampled.csv
-/word2vec/keyterm_annotated_wv_train.txt
+/src/word2vec/keyterm_annotated_wv_train.txt
 wv.model.bin
 test
 

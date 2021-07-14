@@ -1,16 +1,14 @@
 TOPN = 50
 MIN_COLLO_FREQ = 15
-TS = 4
 
 library(dplyr)
-d = readRDS("data/all_files_collocation.rds")
+d = readRDS("data/collocation_merged.rds")
 
 # Get unique terms
 d = d %>% 
    filter(!grepl("[a-zA-Z0-9_-]", collo_1),
           !grepl("[a-zA-Z0-9_-]", collo_2),
-          a > MIN_COLLO_FREQ,
-          timestep == TS) %>%
+          a > MIN_COLLO_FREQ) %>%
    select(-timestep)
 terms = unique(c(d$collo_1, d$collo_2))
 

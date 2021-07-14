@@ -96,3 +96,11 @@ all_files_collocation <- lapply(all_files, function(x) (collocate(x))) %>%
 
 saveRDS(all_files_collocation, "./data/all_files_collocation.rds")
 # write_csv(all_files_collocation, 'all_files_collocation_MI.csv')
+
+
+####### Use merged data #########
+fps <- list.files("../data/time_sliced_collapsed_merged", full.names = T)
+d = lapply(fps, function(x) (collocate(x))) %>%
+  bind_rows() %>% 
+  mutate(timestep = factor(timestep, ordered = T))
+saveRDS(d, "./data/collocation_merged.rds")

@@ -19,4 +19,5 @@ weibo_sampled.csv
 /src/word2vec/keyterm_annotated_wv_train.txt
 wv.model.bin
 test
-
+src/collocation/data/time_sliced_collapsed/
+*.jsonl

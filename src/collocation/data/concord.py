@@ -10,5 +10,5 @@ with open(SRC, encoding="utf-8") as f:
     corpus = [ json.loads(l) for l in f ]
 
 C = Concordancer(corpus)
-C.set_cql_parameters(default_attr="word", max_quant=3)
+C.set_cql_parameters(default_attr="w", max_quant=3)
 server.run(C)   

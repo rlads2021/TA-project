@@ -68,3 +68,33 @@ distr_summary <- function(term, topn) {
     stats[["seed"]] = term
     return(stats)
 }
+
+
+
+
+
+
+all_colloc <- readRDS("data/all_files_collocation.rds")
+
+
+summary_tbl <- function(word, source = c("weibo", "ptt"), timesteps = c(1:3), count = 50) {
+  
+  # tbl for words at front
+  front <- all_colloc %>% filter(collo_2 %in% word, src %in% source, timestep %in% timesteps, a > count) %>%
+    select(-collo_2) %>% 
+    rename(word = collo_1)
+  
+  # tbl for words at rear
+  back <- all_colloc %>% filter(collo_1 %in% word, src %in% source, timestep %in% timesteps, a > count) %>% 
+    select(-collo_1) %>% 
+    rename(word = collo_2)
+  
+  # summary table
+  tbl <- bind_rows("front" = front, "back" = back, .id = "frontness") %>% 
+    group_by(src, timestep) %>% 
+    # select only top 10 MI score 
+    slice_max(MI, n = 10) %>% 
+    rename(count = a)
+  
+  return(tbl)
+}

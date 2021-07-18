@@ -4,17 +4,25 @@ source("functions.R")
 TOPN = 80
 MIN_COLLO_FREQ = 10
 
-for (ts in c(1:9, "all")) {
-  cat("Processing timestep:", ts, "...\n")
-  
-  d = read_collocation(ts = ts, min_freq = MIN_COLLO_FREQ)
-  terms = unique(c(d$collo_1, d$collo_2))
-  term_dist = lapply(terms, distr_summary, TOPN)
-  term_dist = bind_rows(term_dist)
-  
-  fn = paste0("topn_collo_distr_", ts, ".rds")
-  saveRDS(term_dist, file = file.path("data", fn))
+TERMS = strsplit("大陸|臺灣|中國|日本|韓國|美國", "|", fixed=T)[[1]]
+for (term in TERMS) {
+   words = summary_tbl(term, timesteps=1:9, count = TOPN)$word
+   fn = paste0(term, ".txt")
+   writeLines(unique(words), file.path("data/collocates", fn))
 }
+   
+
+# for (ts in c(1:9, "all")) {
+#   cat("Processing timestep:", ts, "...\n")
+
+  # d = read_collocation(ts = ts, min_freq = MIN_COLLO_FREQ)
+  # terms = unique(c(d$collo_1, d$collo_2))
+  # term_dist = lapply(terms, distr_summary, TOPN)
+  # term_dist = bind_rows(term_dist)
+  # 
+  # fn = paste0("topn_collo_distr_", ts, ".rds")
+  # saveRDS(term_dist, file = file.path("data", fn))
+# }
 
 
 # Similar terms to taiwan

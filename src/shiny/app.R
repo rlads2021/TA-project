@@ -77,8 +77,8 @@ ui <- bootstrapPage(
                             inputId = "numOfCollo",
                             label = "搭配詞前 n 名：",
                             min = 5,
-                            max = 50,
-                            value = 10,
+                            max = 300,
+                            value = 75,
                             step = 1,
                             round = T
                          ),
@@ -87,7 +87,7 @@ ui <- bootstrapPage(
                             label = "最低頻率：",
                             min = 1,
                             max = 60,
-                            value = 50,
+                            value = 15,
                             step = 1,
                             round = T
                          ), 

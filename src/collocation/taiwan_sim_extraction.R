@@ -1,81 +1,57 @@
-TOPN = 50
-MIN_COLLO_FREQ = 15
-
 library(dplyr)
-d = readRDS("data/collocation_merged.rds")
+source("functions.R")
 
-# Get unique terms
-d = d %>% 
-   filter(!grepl("[a-zA-Z0-9_-]", collo_1),
-          !grepl("[a-zA-Z0-9_-]", collo_2),
-          a > MIN_COLLO_FREQ) %>%
-   select(-timestep)
-terms = unique(c(d$collo_1, d$collo_2))
+TOPN = 80
+MIN_COLLO_FREQ = 10
 
-term_dist = lapply(terms, function(term) {
-    dt = filter(d, term == collo_1 | term == collo_2) %>% 
-       mutate(isFront = term == collo_2) %>%
-       group_by(src) %>%
-       top_n(TOPN, MI) %>%
-       mutate(rank = rank(desc(MI), ties.method = "average"))
-    
-    # front/back collocate 
-    dt1 = filter(dt, src == "ptt")
-    dt2 = filter(dt, src == "weibo")
-    if (nrow(dt1) == 0 | nrow(dt2) == 0) return(NULL)
-       
-    NA_REPLACE = nrow(dt1) + nrow(dt2)
-    stats = vector("numeric", 13)
-    idx = 1
-    for (data in list(dt1, dt2)) {
-      isF = data$isFront
-      rank = data$rank
-      
-      stats[idx + 1] = mean(isF)
-      stats[idx + 2] = 1 - mean(isF)
-      
-      if (sum(isF) != 0) {
-         stats[idx + 3] = median(rank[isF])
-         stats[idx + 5] = IQR(rank[isF])
-      } else {
-         stats[idx + 3] = NA_REPLACE
-         stats[idx + 5] = NA_REPLACE
-      }
-      if (mean(isF) != 1) {
-         stats[idx + 4] = median(rank[!isF])
-         stats[idx + 6] = IQR(rank[!isF])
-      } else {
-         stats[idx + 4] = NA_REPLACE
-         stats[idx + 6] = NA_REPLACE
-      }
-      
-      idx = idx + 6
-    }  
-    nm = "seed propFront.ptt propBack.ptt medianRankFront.ptt 
-    medianRankBack.ptt IQRrankFront.ptt IQRrankBack.ptt 
-    propFront.weibo propBack.weibo medianRankFront.weibo 
-    medianRankBack.weibo IQRrankFront.weibo IQRrankBack.weibo"
-    names(stats) = strsplit(nm, "\\s+")[[1]]
-    stats = as.list(stats)
-    stats[["seed"]] = term
-    return(stats)
-})
-
-term_dist = bind_rows(term_dist)
-#head(term_dist, 100) %>% View
+for (ts in c(1:9, "all")) {
+  cat("Processing timestep:", ts, "...\n")
+  
+  d = read_collocation(ts = ts, min_freq = MIN_COLLO_FREQ)
+  terms = unique(c(d$collo_1, d$collo_2))
+  term_dist = lapply(terms, distr_summary, TOPN)
+  term_dist = bind_rows(term_dist)
+  
+  fn = paste0("topn_collo_distr_", ts, ".rds")
+  saveRDS(term_dist, file = file.path("data", fn))
+}
 
 
 # Similar terms to taiwan
 library(ggplot2)
+library(ggrepel)
 
-ggplot(term_dist) +
-   geom_hline(yintercept = 0, color = alpha("grey", 0.8)) +
-   geom_vline(xintercept = 0, color = alpha("grey", 0.8)) + 
-   geom_text(
-      aes(x = medianRankFront.weibo - medianRankBack.weibo,
-          y = medianRankFront.ptt - medianRankBack.ptt,
-          label = seed), size = 2.5) +
-   theme_minimal()
+fps = list.files("data", pattern = "topn_collo*", full.names = T)
+term_dist = lapply(fps, function(fp) {
+  ts = gsub("topn_collo_distr_", "", basename(fp))
+  ts = gsub(".rds", "", ts)
+  if (ts == "all") return(NULL)
+  d = readRDS(fp) %>% mutate(timestep = as.integer(ts))
+  return(d)
+})
+term_dist = dplyr::bind_rows(term_dist)
+term_dist$timestep = factor(term_dist$timestep, ordered = T)
+term_dist = term_dist %>%
+  filter(grepl("^(大陸|臺灣|中國|日本|韓國|美國)$", seed))
+
+term_dist_all = readRDS("data/topn_collo_distr_all.rds")%>%
+  filter(grepl("^(大陸|臺灣|中國|日本|韓國|美國)$", seed))
+
+term_dist %>%
+  mutate(lab = paste0(seed, "_", timestep)) %>%
+ggplot(aes(medianRankFront.weibo - medianRankBack.weibo,
+           medianRankFront.ptt - medianRankBack.ptt,
+           color=seed))+
+   geom_hline(yintercept = 0, color = alpha("grey", 0.85)) +
+   geom_vline(xintercept = 0, color = alpha("grey", 0.85)) + 
+   geom_abline(slope=1, intercept = 0, linetype = "dashed", color = alpha("grey", 0.8)) +
+   # geom_text(data = term_dist_all, 
+   #           aes(label = seed), size = 3, color="black") +
+   geom_point() +
+   geom_text_repel(aes(label = lab), size = 2.7) +
+   theme_minimal() +
+   labs(x = "Weibo Back Tendency", y = "PTT Back Tendency",
+        color = "Node Word")
 
 # rank_diff_thres = 1
 # IQR_thres = 5

@@ -1,16 +1,27 @@
-衛生部長
-豬肉
-購買
-軍火
-國務卿
-中國臺灣地區
-政客
-反對
-當地
-驅離
-軍機
-衛生
-領空
-海軍
-臺灣
-副
+timestep: 1
+  front: 
+  back: 
+timestep: 2
+  front: 購買, 反對
+  back: 軍火, 國務卿, 中國臺灣地區, 政客
+timestep: 3
+  front: 
+  back: 
+timestep: 4
+  front: 
+  back: 
+timestep: 5
+  front: 反對
+  back: 中國臺灣地區, 當地
+timestep: 6
+  front: 驅離, 領空
+  back: 衛生部長, 軍機, 衛生, 衛生部長
+timestep: 7
+  front: 臺灣
+  back: 海軍
+timestep: 8
+  front: 
+  back: 豬肉
+timestep: 9
+  front: 
+  back: 副

@@ -1,3 +1,27 @@
-瑜
-市長
-長
+timestep: 1
+  front: 
+  back: 瑜
+timestep: 2
+  front: 市長
+  back: 瑜
+timestep: 3
+  front: 市長, 長
+  back: 瑜, 瑜
+timestep: 4
+  front: 
+  back: 瑜
+timestep: 5
+  front: 
+  back: 瑜
+timestep: 6
+  front: 
+  back: 瑜
+timestep: 7
+  front: 
+  back: 瑜
+timestep: 8
+  front: 
+  back: 
+timestep: 9
+  front: 
+  back: 瑜

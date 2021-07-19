@@ -6,9 +6,19 @@ MIN_COLLO_FREQ = 10
 
 TERMS = strsplit("大陸|臺灣|中國|日本|韓國|美國", "|", fixed=T)[[1]]
 for (term in TERMS) {
-   words = summary_tbl(term, timesteps=1:9, count = TOPN)$word
+  lines = c()
+  for (ts in 1:9) {
+    d = summary_tbl(term, timesteps = ts, count = TOPN)
+    front = d$word[d$frontness == "front"]
+    back = d$word[d$frontness == "back"]
+    out = c(paste0("timestep: ", ts),
+            paste0("  front: ", paste(front, collapse = ", ")),
+            paste0("  back: ", paste(back, collapse = ", "))
+    )
+    lines = c(lines, out)
+  }
    fn = paste0(term, ".txt")
-   writeLines(unique(words), file.path("data/collocates", fn))
+   writeLines(lines, file.path("data/collocates", fn))
 }
    
 

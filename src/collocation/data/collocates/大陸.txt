@@ -1,6 +1,27 @@
-中國
-大城市
-地區
-考取
-執業
-口罩
+timestep: 1
+  front: 
+  back: 
+timestep: 2
+  front: 中國
+  back: 
+timestep: 3
+  front: 中國
+  back: 
+timestep: 4
+  front: 中國
+  back: 大城市
+timestep: 5
+  front: 中國, 中國
+  back: 
+timestep: 6
+  front: 中國
+  back: 
+timestep: 7
+  front: 中國
+  back: 地區
+timestep: 8
+  front: 考取, 中國
+  back: 執業, 口罩
+timestep: 9
+  front: 中國
+  back: 

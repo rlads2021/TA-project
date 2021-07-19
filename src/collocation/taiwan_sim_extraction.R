@@ -8,7 +8,8 @@ TERMS = strsplit("臺灣|中國|日本|美國|香港", "|", fixed=T)[[1]]
 for (term in TERMS) {
   lines = c()
   for (ts in 1:9) {
-    d = summary_tbl(term, timesteps = ts, count = MIN_COLLO_FREQ, topn = TOPN)
+    d = summary_tbl(term, timesteps = ts, count = MIN_COLLO_FREQ, topn = TOPN) %>%
+      arrange(src, frontness, desc(MI))
     front_ptt = d$word[d$frontness == "front" & d$src == "ptt"]
     front_wei = d$word[d$frontness == "front" & d$src == "weibo"]
     back_ptt = d$word[d$frontness == "back" & d$src == "ptt"]

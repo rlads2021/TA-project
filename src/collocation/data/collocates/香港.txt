@@ -1,0 +1,45 @@
+timestep: 1
+  front_ptt: 
+  front_wei: 臺灣
+  back_ptt: 
+  back_wei: 澳門|臺灣
+timestep: 2
+  front_ptt: 幫助|取消|挺|撐|今日|對於|放棄|通過|支持|幫|與|對|讓|日|現在|為|香港|中國|臺灣
+  front_wei: 對|臺灣
+  back_ptt: 情勢|澳門|特殊|反|反送|明日|人來|難民|爭取|朋友|移民|人民|版|議題|民眾|國安法|民主|問題|自由|中國|香港|臺灣
+  back_wei: 澳門|問題|臺灣
+timestep: 3
+  front_ptt: 撐|日|對
+  front_wei: 招收|安寧|插手|拋|拋出|所謂|破壞|我們|月|臺灣
+  back_ptt: 支|反送|手足
+  back_wei: 澳門|爆發|繁榮|事務|東網|道|想|問題|身邊|爆料|臺灣|新聞
+timestep: 4
+  front_ptt: 撐|光復|支持|對|臺灣
+  front_wei: 外籍|逃離|搞亂|插手|簽署|廣東|鄧紫棋|離開|通過|對|說|l|臺灣
+  back_ptt: 獨立|特殊|反送|時代|人民|國安法|中國
+  back_wei: 自治|民主|紅館|澳門|事務|新加坡|國安法|問題|臺灣
+timestep: 5
+  front_ptt: 與|對|說
+  front_wei: 鄧紫棋|大陸|與|對|中國|臺灣
+  back_ptt: 
+  back_wei: 澳門|紅館|國安法|看到|問題|臺灣
+timestep: 6
+  front_ptt: 
+  front_wei: 深圳|雜誌|聯合早報|含|週刊|鄧紫棋|違反|l|臺灣
+  back_ptt: 
+  back_wei: 紅館|澳門|國安法|經濟日報|中通社|鳳凰|新|公司|臺灣|中國
+timestep: 7
+  front_ptt: 撐|消費|支持|對
+  front_wei: 鄧紫棋|包括|臺灣
+  back_ptt: 議題
+  back_wei: 國安法|紅館|澳門|問題|確診|一個|臺灣
+timestep: 8
+  front_ptt: 挺|撐|對
+  front_wei: 守護|鄧紫棋|含|名|臺灣
+  back_ptt: 反送|民眾
+  back_wei: 國安法|新加坡|紅館|出口|澳門|臺灣|確診|新聞
+timestep: 9
+  front_ptt: 撐
+  front_wei: 鄧紫棋|內地|與|l|臺灣
+  back_ptt: 臺灣
+  back_wei: 國安法|紅館|乜|澳門|大陸|臺灣

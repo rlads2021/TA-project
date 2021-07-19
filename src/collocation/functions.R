@@ -77,7 +77,7 @@ distr_summary <- function(term, topn) {
 all_colloc <- readRDS("data/all_files_collocation.rds")
 
 
-summary_tbl <- function(word, source = c("weibo", "ptt"), timesteps = c(1:3), count = 50) {
+summary_tbl <- function(word, source = c("weibo", "ptt"), timesteps = c(1:3), count = 50, topn=10) {
   
   # tbl for words at front
   front <- all_colloc %>% filter(collo_2 %in% word, src %in% source, timestep %in% timesteps, a > count) %>%
@@ -93,7 +93,7 @@ summary_tbl <- function(word, source = c("weibo", "ptt"), timesteps = c(1:3), co
   tbl <- bind_rows("front" = front, "back" = back, .id = "frontness") %>% 
     group_by(src, timestep) %>% 
     # select only top 10 MI score 
-    slice_max(MI, n = 10) %>% 
+    slice_max(MI, n = topn) %>% 
     rename(count = a)
   
   return(tbl)

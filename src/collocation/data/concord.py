@@ -3,7 +3,7 @@ import json
 from concordancer.concordancer import Concordancer
 from concordancer import server
 
-SRC = ["corpus_ptt.jsonl", "corpus_weibo.jsonl"][1]
+SRC = ["corpus_ptt.jsonl", "corpus_weibo.jsonl", "corpus.jsonl"][2]
 
 print(f"Reading corpus file {SRC}...")
 with open(SRC, encoding="utf-8") as f:

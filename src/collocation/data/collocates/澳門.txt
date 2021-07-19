@@ -1,0 +1,45 @@
+timestep: 1
+  front_ptt: 
+  front_wei: 香港
+  back_ptt: 
+  back_wei: 
+timestep: 2
+  front_ptt: 香港
+  front_wei: 香港
+  back_ptt: 關係
+  back_wei: 臺灣
+timestep: 3
+  front_ptt: 
+  front_wei: 香港
+  back_ptt: 
+  back_wei: 威尼斯人|身邊|爆料|臺灣
+timestep: 4
+  front_ptt: 
+  front_wei: 香港|中國
+  back_ptt: 
+  back_wei: 人士|臺灣
+timestep: 5
+  front_ptt: 
+  front_wei: 香港
+  back_ptt: 
+  back_wei: 臺灣
+timestep: 6
+  front_ptt: 
+  front_wei: 香港
+  back_ptt: 
+  back_wei: 臺灣地區|臺灣
+timestep: 7
+  front_ptt: 
+  front_wei: 香港|7|中國|臺灣
+  back_ptt: 
+  back_wei: 臺灣地區|確診|臺灣
+timestep: 8
+  front_ptt: 
+  front_wei: 鄭州|香港|7
+  back_ptt: 
+  back_wei: 航空|確診|臺灣
+timestep: 9
+  front_ptt: 
+  front_wei: 香港|中國
+  back_ptt: 
+  back_wei: 張韶涵|中國臺灣|l|臺灣

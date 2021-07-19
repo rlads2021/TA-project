@@ -4,16 +4,20 @@ source("functions.R")
 TOPN = 80
 MIN_COLLO_FREQ = 10
 
-TERMS = strsplit("大陸|臺灣|中國|日本|韓國|美國", "|", fixed=T)[[1]]
+TERMS = strsplit("臺灣|中國|日本|美國|香港", "|", fixed=T)[[1]]
 for (term in TERMS) {
   lines = c()
   for (ts in 1:9) {
-    d = summary_tbl(term, timesteps = ts, count = TOPN)
-    front = d$word[d$frontness == "front"]
-    back = d$word[d$frontness == "back"]
+    d = summary_tbl(term, timesteps = ts, count = MIN_COLLO_FREQ, topn = TOPN)
+    front_ptt = d$word[d$frontness == "front" & d$src == "ptt"]
+    front_wei = d$word[d$frontness == "front" & d$src == "weibo"]
+    back_ptt = d$word[d$frontness == "back" & d$src == "ptt"]
+    back_wei = d$word[d$frontness == "back" & d$src == "weibo"]
     out = c(paste0("timestep: ", ts),
-            paste0("  front: ", paste(front, collapse = ", ")),
-            paste0("  back: ", paste(back, collapse = ", "))
+            paste0("  front_ptt: ", paste(front_ptt, collapse = "|")),
+            paste0("  front_wei: ", paste(front_wei, collapse = "|")),
+            paste0("  back_ptt: ", paste(back_ptt, collapse = "|")),
+            paste0("  back_wei: ", paste(back_wei, collapse = "|"))
     )
     lines = c(lines, out)
   }
@@ -50,10 +54,10 @@ term_dist = lapply(fps, function(fp) {
 term_dist = dplyr::bind_rows(term_dist)
 term_dist$timestep = factor(term_dist$timestep, ordered = T)
 term_dist = term_dist %>%
-  filter(grepl("^(大陸|臺灣|中國|日本|韓國|美國)$", seed))
+  filter(grepl("^(臺灣|中國|日本|美國|香港)$", seed))
 
 term_dist_all = readRDS("data/topn_collo_distr_all.rds")%>%
-  filter(grepl("^(大陸|臺灣|中國|日本|韓國|美國)$", seed))
+  filter(grepl("^(臺灣|中國|日本|美國|香港)$", seed))
 
 term_dist %>%
   mutate(lab = paste0(seed, "_", timestep)) %>%

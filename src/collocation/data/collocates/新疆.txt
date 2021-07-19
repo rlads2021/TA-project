@@ -1,0 +1,45 @@
+timestep: 1
+  front_ptt: 
+  front_wei: 
+  back_ptt: 
+  back_wei: 
+timestep: 2
+  front_ptt: 
+  front_wei: 
+  back_ptt: 
+  back_wei: 
+timestep: 3
+  front_ptt: 
+  front_wei: 
+  back_ptt: 
+  back_wei: 西藏
+timestep: 4
+  front_ptt: 
+  front_wei: 
+  back_ptt: 
+  back_wei: 西藏
+timestep: 5
+  front_ptt: 
+  front_wei: 
+  back_ptt: 
+  back_wei: 新增|臺灣
+timestep: 6
+  front_ptt: 
+  front_wei: 內蒙古|病例|1|例
+  back_ptt: 
+  back_wei: 伊犁|廣西|新增
+timestep: 7
+  front_ptt: 
+  front_wei: 例
+  back_ptt: 
+  back_wei: 南疆|連續
+timestep: 8
+  front_ptt: 
+  front_wei: 爲
+  back_ptt: 
+  back_wei: 西藏|連續
+timestep: 9
+  front_ptt: 
+  front_wei: 
+  back_ptt: 
+  back_wei: 

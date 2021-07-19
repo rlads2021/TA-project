@@ -1,27 +1,45 @@
 timestep: 1
-  front: 
-  back: 瑜
+  front_ptt: 候選人|日本|市長|國民黨|說
+  front_wei: 日本
+  back_ptt: 瑜
+  back_wei: 瑜|臺灣
 timestep: 2
-  front: 市長
-  back: 瑜
+  front_ptt: 市長|罷免|說|REMOVEDURL
+  front_wei: 
+  back_ptt: 瑜
+  back_wei: 瑜
 timestep: 3
-  front: 市長, 長
-  back: 瑜, 瑜
+  front_ptt: 力挺|支持|市長|認為|罷免|與|對|說
+  front_wei: 在於|留意|長|年內|中國臺灣|通過|罷免|日本|解除
+  back_ptt: 瑜
+  back_wei: LCD|趕不走|瑜|注意
 timestep: 4
-  front: 
-  back: 瑜
+  front_ptt: 市長
+  front_wei: 日本|爲|臺灣
+  back_ptt: 瑜
+  back_wei: 女子|瑜|日本|臺灣
 timestep: 5
-  front: 
-  back: 瑜
+  front_ptt: 市長
+  front_wei: 日本
+  back_ptt: 瑜
+  back_wei: 與
 timestep: 6
-  front: 
-  back: 瑜
+  front_ptt: 
+  front_wei: 比較|日本|從
+  back_ptt: 瑜
+  back_wei: 三星|法華
 timestep: 7
-  front: 
-  back: 瑜
+  front_ptt: 日本|市長
+  front_wei: 日本|日|臺灣
+  back_ptt: 瑜
+  back_wei: 女子|瑜|臺灣
 timestep: 8
-  front: 
-  back: 
+  front_ptt: 日本
+  front_wei: 日本
+  back_ptt: 瑜
+  back_wei: 臺灣
 timestep: 9
-  front: 
-  back: 瑜
+  front_ptt: 日本
+  front_wei: 墨西哥|日本|個|爲|臺灣
+  back_ptt: 瑜
+  back_wei: GDP|16|中國臺灣|女子

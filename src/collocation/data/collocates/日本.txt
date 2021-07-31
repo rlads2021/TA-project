@@ -1,45 +1,45 @@
 timestep: 1
-  front_ptt: 美國
-  front_wei: 
-  back_ptt: 韓國
-  back_wei: 韓國|臺灣
+  front_ptt: 去|在|跟|、|是|。|了|的|，
+  front_wei: 在|喜歡|、|，|是|。|的
+  back_ptt: 人|的|、|也|，
+  back_wei: 人|、|和|的|，
 timestep: 2
-  front_ptt: 與
-  front_wei: 
-  back_ptt: 臺灣
-  back_wei: 將|臺灣
+  front_ptt: 在|跟|、|與|去|。|:|是|的|，
+  front_wei: 【|、|是|在|，
+  back_ptt: 人|、|的|有|，
+  back_wei: 將|和|人|的
 timestep: 3
-  front_ptt: 美國|對|臺灣|REMOVEDURL
-  front_wei: 抗議|對於|從|國家|日本|對|美國|臺灣
-  back_ptt: 臺灣|說
-  back_wei: 控股|沖繩|企圖|這種|雖然|️|對|日本|韓國|臺灣
+  front_ptt: 去|在|和|跟|對|、|被|與|的|。|是|，
+  front_wei: 小|被|抗議|在|是|、|去|從|#|【|“|。|了|，|##|的
+  back_ptt: 人|的|、|也|，
+  back_wei: …|沖繩|控股|有且|沖繩縣|企圖|人|否則|人種|人爲|最近|雖然|這種|、|什麼|對|（|和|在|是|的|，
 timestep: 4
-  front_ptt: 美國|臺灣|說
-  front_wei: 入境|韓國|報道|據|與|美國|對|日|臺灣
-  back_ptt: 朋友|女|臺灣
-  back_wei: 防衛|韓國|女生|女|發現|時候|臺灣
+  front_ptt: 在|返回|跟|、|去|是|和|到|:|說|。|的|，
+  front_wei: 入境|在|據|、|和|是因爲|#|與|去|是|【|。|對|，|《|了|的
+  back_ptt: 人|女|朋友|、|有|的|就|是|，
+  back_wei: 防衛|人|女|女生|的|、|發現|和|”|，
 timestep: 5
-  front_ptt: 說|臺灣|REMOVEDURL
-  front_wei: 與|臺灣
-  back_ptt: 
-  back_wei: 韓國|臺灣
+  front_ptt: 在|。|比|跟|去|、|是|REMOVEDURL|:|了|的|，
+  front_wei: 去|和|#|、|在|被|##|是|】|，|。|臺灣|的
+  back_ptt: 人|的|、|也|，
+  back_wei: 人|、|和|的|。|，
 timestep: 6
-  front_ptt: 臺灣
-  front_wei: 勾結|竄訪|發表|臺灣
-  back_ptt: 女
-  back_wei: 動漫|破壞|韓國|殖民|出席|與|爲|臺灣
+  front_ptt: 在|去|跟|、|是|。|被|：|REMOVEDURL|:|，|的
+  front_wei: 是|勾結|竄訪|某些|、|自|「|去|？|就是|在|被|到|“|和|一個|#|有|了|的|。|，
+  back_ptt: 人|前首相|女|網友|的|、|也|是|，
+  back_wei: 人|動漫|殖民|入境|學者|、|與|爲|和|的|，
 timestep: 7
-  front_ptt: 
-  front_wei: 美國|臺灣
-  back_ptt: 韓國
-  back_wei: 白鯽|韓國|臺灣
+  front_ptt: 在|去|、|跟|是|:|。|的|，
+  front_wei: 、|在|是|和|去|##|被|，|#|：|了|。|的
+  back_ptt: 人|、|也|的|，
+  back_wei: 人|、|白鯽|和|的|。|，
 timestep: 8
-  front_ptt: 
-  front_wei: 與|中國|臺灣
-  back_ptt: 韓國
-  back_wei: 韓國|牛|臺灣
+  front_ptt: 去|在|跟|、|是|的|，
+  front_wei: 與|去|、|和|在|被|##|到|，|#|。|（|是|的
+  back_ptt: 人|、|的|，
+  back_wei: 人|留學|和|進口|、|的|臺灣|，
 timestep: 9
-  front_ptt: 說|REMOVEDURL|臺灣
-  front_wei: 時稱|海域|漁船|糾正|認爲|稱|中國臺灣|個|與|臺灣
-  back_ptt: 前首相|韓國|統一|美國|臺灣
-  back_wei: 前首相|海上|公務|澳大利亞|韓國|27|領導人|新|記者|臺灣
+  front_ptt: 跟|在|像|去|、|REMOVEDURL|，|是|。|的
+  front_wei: 被|糾正|，|、|認爲|小|去|在|和|#|與|到|【|是|！|。|的
+  back_ptt: 人|前首相|統一|、|的|也|在|是|，
+  back_wei: 公務|前首相|人|領導人|海上|記者|新|27|和|、|的|是|臺灣|。|，

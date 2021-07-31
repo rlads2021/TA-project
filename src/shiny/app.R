@@ -78,7 +78,7 @@ ui <- bootstrapPage(
                             label = "搭配詞前 n 名：",
                             min = 5,
                             max = 300,
-                            value = 75,
+                            value = 80,
                             step = 1,
                             round = T
                          ),
@@ -87,7 +87,7 @@ ui <- bootstrapPage(
                             label = "最低頻率：",
                             min = 1,
                             max = 60,
-                            value = 15,
+                            value = 10,
                             step = 1,
                             round = T
                          ), 

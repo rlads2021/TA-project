@@ -8,8 +8,9 @@ TERMS = strsplit("臺灣|中國|日本|美國|香港", "|", fixed=T)[[1]]
 for (term in TERMS) {
   lines = c()
   for (ts in 1:9) {
-    d = summary_tbl(term, timesteps = ts, count = MIN_COLLO_FREQ, topn = TOPN) %>%
-      arrange(src, frontness, desc(MI))
+    d = summary_tbl(term, timesteps = ts, min_count = 0, topn = TOPN, 
+                    sort_by = "Gsq") %>%
+      arrange(src, frontness, desc(Gsq))
     front_ptt = d$word[d$frontness == "front" & d$src == "ptt"]
     front_wei = d$word[d$frontness == "front" & d$src == "weibo"]
     back_ptt = d$word[d$frontness == "back" & d$src == "ptt"]
@@ -27,17 +28,17 @@ for (term in TERMS) {
 }
    
 
-# for (ts in c(1:9, "all")) {
-#   cat("Processing timestep:", ts, "...\n")
+for (ts in 1:9) {
+  cat("Processing timestep:", ts, "...\n")
 
-  # d = read_collocation(ts = ts, min_freq = MIN_COLLO_FREQ)
-  # terms = unique(c(d$collo_1, d$collo_2))
-  # term_dist = lapply(terms, distr_summary, TOPN)
-  # term_dist = bind_rows(term_dist)
-  # 
-  # fn = paste0("topn_collo_distr_", ts, ".rds")
-  # saveRDS(term_dist, file = file.path("data", fn))
-# }
+  d = read_collocation(ts = ts, min_freq = MIN_COLLO_FREQ)
+  terms = unique(c(d$collo_1, d$collo_2))
+  term_dist = lapply(terms, distr_summary, TOPN)
+  term_dist = bind_rows(term_dist)
+
+  fn = paste0("topn_collo_distr_", ts, ".rds")
+  saveRDS(term_dist, file = file.path("data", fn))
+}
 
 
 # Similar terms to taiwan

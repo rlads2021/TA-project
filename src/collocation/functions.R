@@ -7,11 +7,11 @@ read_collocation <- function(ts, min_freq) {
                   a > min_freq) %>%
            select(-timestep)
     } else {
-        d = readRDS("data/all_files_collocation.rds")
+        d = readr::read_csv("data/all_files_collocation.csv")
         d = d %>% 
            filter(!grepl("[a-zA-Z0-9_-]", collo_1),
                   !grepl("[a-zA-Z0-9_-]", collo_2),
-                  a > min_freq,
+                  count >= min_freq,
                   timestep == ts) %>%
            select(-timestep)
     }
@@ -74,18 +74,20 @@ distr_summary <- function(term, topn) {
 
 
 
-all_colloc <- readRDS("data/all_files_collocation.rds")
+all_colloc <- readr::read_csv("data/all_files_collocation.csv")
+# all_colloc <- readRDS("data/all_files_collocation.rds")
 
-
-summary_tbl <- function(word, source = c("weibo", "ptt"), timesteps = c(1:3), count = 50, topn=10) {
+summary_tbl <- function(word, source = c("weibo", "ptt"), 
+                        timesteps = c(1:3), min_count = 50, topn=10,
+                        sort_by="Gsq") {
   
   # tbl for words at front
-  front <- all_colloc %>% filter(collo_2 %in% word, src %in% source, timestep %in% timesteps, a > count) %>%
+  front <- all_colloc %>% filter(collo_2 %in% word, src %in% source, timestep %in% timesteps, count >= min_count) %>%
     select(-collo_2) %>% 
     rename(word = collo_1)
   
   # tbl for words at rear
-  back <- all_colloc %>% filter(collo_1 %in% word, src %in% source, timestep %in% timesteps, a > count) %>% 
+  back <- all_colloc %>% filter(collo_1 %in% word, src %in% source, timestep %in% timesteps, count >= min_count) %>% 
     select(-collo_1) %>% 
     rename(word = collo_2)
   
@@ -93,8 +95,7 @@ summary_tbl <- function(word, source = c("weibo", "ptt"), timesteps = c(1:3), co
   tbl <- bind_rows("front" = front, "back" = back, .id = "frontness") %>% 
     group_by(src, timestep) %>% 
     # select only top 10 MI score 
-    slice_max(MI, n = topn) %>% 
-    rename(count = a)
+    slice_max(get(sort_by), n = topn)
   
   return(tbl)
 }

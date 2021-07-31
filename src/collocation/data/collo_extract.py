@@ -6,7 +6,8 @@ from tqdm import tqdm
 
 CUTOFF = 10
 TOPN = 20
-NODES = "臺灣|中國|日本|美國|香港".split("|")
+NODES = "臺灣".split("|")
+# |中國|日本|美國|香港
 
 def main():
     rows = []

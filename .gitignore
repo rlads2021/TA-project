@@ -22,3 +22,4 @@ test
 src/collocation/data/time_sliced_collapsed/
 *.jsonl
 __pycache__
+.Rproj.user

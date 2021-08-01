@@ -21,21 +21,19 @@ def main():
 
     # Align two model's vector space
     # Set base model to align with
-    base_model = Word2Vec.load(str(MODELS / "ptt_000.model"))
-    model = Word2Vec.load(str(MODELS / "weibo_000.model"))
-    vocab = set(base_model.wv.vocab.keys()).intersection(model.wv.vocab)
-
-    # Align model
-    model = smart_procrustes_align_gensim(base_model, model)
+    base_model = Word2Vec.load(str(MODELS / "all.model"))
+    vocab = set(base_model.wv.vocab.keys())
 
     # Export model
-    for m, src in [ (base_model, "ptt"), (model, "weibo") ]:
-        m.init_sims(replace=True)    # Use unit vector
-        m.wv.save( str(MODELS / f"{src}_aligned.model") )
+    for fp in MODELS.glob("*000.model"):
+        # Align model
+        model = smart_procrustes_align_gensim(base_model, Word2Vec.load(str(fp)))
+        model.init_sims(replace=True)    # Use unit vector
+        model.wv.save( str(MODELS / f"{fp.stem.replace('_000', '')}_aligned.model") )
 
-    # Save common vocab
-    with open(COMMON_VOCAB, "wb") as f:
-        pickle.dump(vocab, f)
+    # # Save common vocab
+    # with open(COMMON_VOCAB, "wb") as f:
+    #     pickle.dump(vocab, f)
 
 
 

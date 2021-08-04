@@ -12,7 +12,9 @@ knitr::opts_chunk$set(
   echo = TRUE,
   message = FALSE,
   warning = FALSE,
-  out.width = "85%"
+  out.width = "100%",
+  fig.dim = c(8, 6),
+  dpi = 300
 )
 
 
@@ -26,9 +28,10 @@ source("functions.R")
 collo <- readr::read_csv("country_collocates.csv")
 
 #' # Left collocates topical drift
-tp_left <- collo %>% filter(collo_pos == "left") 
+tp_left <- collo #%>% filter(collo_pos == "left") 
 
 #' ## Topic contrast (PTT vs. Weibo)
+#+ fig.dim=c(8, 3.5)
 d <- tp_left %>% 
     group_by(src, collo) %>%
     summarise(count = sum(count)) %>%
@@ -44,23 +47,26 @@ distr <- sapply(c("ptt", "weibo"), function(source) {
   return(normalize(distr))
 })
 
+topic_labs <- rownames(distr)
 distr %>% 
   as_tibble() %>% 
-  mutate(topic = factor(seq_along(ptt), order = T)) %>%
+  mutate(topic = topic_labs) %>%
   gather(key = "src", value = "y", ptt, weibo) %>%
 ggplot() +
   geom_bar(aes(topic, y, fill = src),
            stat = "identity", position = "dodge") +
-  facet_wrap(vars(src), nrow = 2) +
+  facet_wrap(vars(src), ncol = 2) +
+  coord_flip() +
   scale_fill_manual(values = c("ptt" = "#00BFC4", "weibo" = "#F8766D")) +
   theme(legend.position = "none") +
-  labs(y = "average", 
-       title = "Topic contrast of “臺灣” between PTT & Weibo")
+  # axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Topic", y = "Percent")
 
 
 #' ## Topic drift across time (PTT)
 # scales::hue_pal()(4)
-get_distr <- function(source, ts, pos = "left") {
+get_distr <- function(source, ts, pos = c("left", "right")) {
   d <- collo %>% 
     filter(collo_pos %in% pos, 
            timestep %in% ts,
@@ -78,11 +84,11 @@ get_distr <- function(source, ts, pos = "left") {
 }
 
 ptt_ts_distr <- sapply(1:9, function(ts) 
-  get_distr("ptt", ts, "left"))
+  get_distr("ptt", ts))
 
 ptt_ts_distr %>%
   as_tibble() %>%
-  mutate(topic = factor(seq_along(V1), order = T)) %>%
+  mutate(topic = topic_labs) %>%
   gather(key = "timestep", value = "y", -topic) %>%
   mutate(timestep = gsub("V", "", timestep, fixed = T)) %>%
   mutate(timestep = factor(as.integer(timestep, order = T))) %>%
@@ -90,17 +96,19 @@ ptt_ts_distr %>%
   geom_bar(aes(topic, y), 
            stat = "identity",
            fill = "#00BFC4") +
-  facet_wrap(vars(timestep)) +
-  labs(y = "average", 
-       title = "Topic drift of “臺灣” across time (PTT)")
+  facet_wrap(vars(timestep), nrow = 2) +
+  coord_flip() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(y = "Percent", x = "")
 
 #' ## Topic drift across time (Weibo)
 wei_ts_distr <- sapply(1:9, function(ts) 
-  get_distr("weibo", ts, "left"))
+  get_distr("weibo", ts))
 
 wei_ts_distr %>%
   as_tibble() %>%
-  mutate(topic = factor(seq_along(V1), order = T)) %>%
+  mutate(topic = topic_labs) %>%
   gather(key = "timestep", value = "y", -topic) %>%
   mutate(timestep = gsub("V", "", timestep, fixed = T)) %>%
   mutate(timestep = factor(as.integer(timestep, order = T))) %>%
@@ -108,9 +116,11 @@ wei_ts_distr %>%
   geom_bar(aes(topic, y), 
            stat = "identity",
            fill = "#F8766D") +
-  facet_wrap(vars(timestep)) +
-  labs(y = "average", 
-       title = "Topic drift of “臺灣” across time (Weibo)")
+  facet_wrap(vars(timestep), nrow = 2) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(y = "Percent", x = "")
 
 
 #' # Topic variation across time
@@ -119,6 +129,7 @@ cos_dist <- function(x, y) 1 - (x %*% y) / sqrt(sum(x^2) * sum(y^2))
 cos_sim <- function(x, y) (x %*% y) / sqrt(sum(x^2) * sum(y^2)) 
 
 #' ## Within src
+#+ fig.dim=c(8, 3)
 topic_dist <- sapply(c("ptt", "weibo"), function(src) {
     topic_distr <- sapply(1:9, function(ts) get_distr(src, ts, "left"))
     #mean_distr <- rep(mean(topic_distr[, 1]), nrow(topic_distr))
@@ -134,15 +145,15 @@ data.frame(ts = factor(1:9, ordered = T)) %>%
   cbind(topic_dist) %>%
   gather(key = "src", value = "distance", ptt, weibo) %>%
 ggplot() +
-  geom_line(aes(ts, distance, color = src, group = src)) +
+  geom_line(aes(ts, distance, color = src, group = src, linetype=src)) +
   scale_color_manual(values = c("ptt" = "#00BFC4", "weibo" = "#F8766D")) +
-  labs(title = "Topic variation within PTT/Weibo",
-       y = "distance to mean distribution")
+  labs(y = "Distance to mean distribution",
+       x = "Time")
 
 #' ## Between src
 topic_distr_contrast <- sapply(1:9, function(ts) {
-  ptt <- get_distr("ptt", ts, "left")
-  wei <- get_distr("weibo", ts, "left")
+  ptt <- get_distr("ptt", ts)
+  wei <- get_distr("weibo", ts)
   cos_sim(ptt, wei)
 })
 
@@ -151,4 +162,5 @@ data.frame(
   similarity = topic_distr_contrast) %>% 
   ggplot() +
   geom_line(aes(ts, similarity, group=1)) +
-  labs(title = "Topic similarity between PTT & Weibo")
+  labs(y = "Similarity",
+       x = "Time")

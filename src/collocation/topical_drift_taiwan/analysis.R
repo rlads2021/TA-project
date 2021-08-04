@@ -7,12 +7,14 @@
 #'     number_sections: true
 #' ---
 
-#+ include=FALSE, fig.width=7
+#+ include=FALSE
 knitr::opts_chunk$set(
   echo = TRUE,
   message = FALSE,
   warning = FALSE,
-  out.width = "85%"
+  out.width = "100%",
+  fig.dim = c(8, 4),
+  dpi = 300
 )
 
 
@@ -44,6 +46,7 @@ tp_left <- collo %>%
   mutate(total_count = sum(count)) %>% ungroup()
 
 #' ## Topic contrast (PTT vs. Weibo)
+#+ fig.dim=c(8, 3.2)
 tp_left %>%
   group_by(src, cluster) %>% 
   summarise(count = sum(count)) %>%
@@ -59,7 +62,7 @@ ggplot() +
   scale_fill_manual(values = c("ptt" = "#00BFC4", "weibo" = "#F8766D")) +
   theme(legend.position = "none") +
   coord_flip() +
-  labs(y = "Percent")
+  labs(x = "Cluster", y = "Percent")
 
 #' ## Topic drift across time (PTT)
 # scales::hue_pal()(4)
@@ -69,10 +72,11 @@ tp_left %>%
   geom_bar(aes(cluster, count/total_count), 
            stat = "identity",
            fill = "#00BFC4") +
-  facet_wrap(vars(timestep)) +
+  facet_wrap(vars(timestep), nrow = 2) +
   coord_flip() +
   scale_y_continuous(labels = scales::percent) +
-  labs(y = "Percent")
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(y = "Percent", x ="")
 
 #' ## Topic drift across time (Weibo)
 tp_left %>% 
@@ -81,10 +85,11 @@ tp_left %>%
   geom_bar(aes(cluster, count/total_count), 
            stat = "identity",
            fill = "#F8766D") +
-  facet_wrap(vars(timestep)) +
+  facet_wrap(vars(timestep), nrow = 2) +
   coord_flip() +
+  theme(axis.text.x = element_text(angle = 90)) +
   scale_y_continuous(labels = scales::percent) +
-  labs(y = "Percent")
+  labs(y = "Percent", x ="")
 
 
 #' # Topic variation across time
@@ -107,6 +112,7 @@ cos_sim <- function(x, y) (x %*% y) / sqrt(sum(x^2) * sum(y^2))
 norm_dist <- function(x) x / sum(x)
 
 #' ## Within src
+#+ fig.dim=c(8, 3)
 topic_dist <- sapply(c("ptt", "weibo"), function(src) {
     topic_distr <- sapply(1:9, function(ts) vectorize_topic_distr(src, ts))
     #mean_distr <- rep(mean(topic_distr[, 1]), nrow(topic_distr))
@@ -122,7 +128,7 @@ data.frame(ts = factor(1:9, ordered = T)) %>%
   cbind(topic_dist) %>%
   gather(key = "src", value = "distance", ptt, weibo) %>%
 ggplot() +
-  geom_line(aes(ts, distance, color = src, group = src)) +
+  geom_line(aes(ts, distance, color = src, group = src, linetype=src)) +
   scale_color_manual(values = c("ptt" = "#00BFC4", "weibo" = "#F8766D")) +
   labs(y = "Distance to mean distribution",
        x = "Time")
